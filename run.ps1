@@ -89,7 +89,14 @@ function New-AlphanumericSecret([int]$byteCount) {
 }
 
 if (-not (Test-Path '.env')) {
-    $content = Get-Content '.env.example' -Raw
+    # ⚠️ 반드시 UTF-8 로 읽어야 한다.
+    #   Get-Content 를 -Encoding 없이 쓰면 PowerShell 5.1 은 시스템 기본 코드페이지
+    #   (한국어 Windows 는 CP949)로 읽는다. .env.example 은 UTF-8 이므로 한글 주석이
+    #   깨진 문자로 바뀌고, 아래 WriteAllText 가 그 깨진 문자를 "정상 UTF-8"로 저장해
+    #   되돌릴 수 없게 된다(실제로 발생했던 문제 — 파일은 UTF-8 인데 내용만 깨짐).
+    #   아래 WriteAllText 와 짝을 맞춰 .NET API 로 명시적으로 읽는다.
+    $content = [IO.File]::ReadAllText((Join-Path $PSScriptRoot '.env.example'),
+                                      [Text.UTF8Encoding]::new($false))
 
     $dbPassword = New-AlphanumericSecret 24
     $content = $content -replace 'change_me_local_only', $dbPassword
