@@ -17,6 +17,16 @@ repositories {
 	mavenCentral()
 }
 
+// 이 프로젝트의 소스에는 한글 주석과 한글 문자열 리터럴(1_spack.md 가 규정한 에러 메시지)이 들어 있다.
+// 인코딩을 명시하지 않으면 컴파일러가 플랫폼 기본값(예: 한국어 Windows 의 x-windows-949)을 써서
+// "인증이 필요합니다" 같은 응답 메시지가 깨진다 — 명세와 문자 단위로 일치해야 하는 값이므로 계약 위반이 된다.
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+}
+tasks.withType(Test).configureEach {
+	systemProperty 'file.encoding', 'UTF-8'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -25,6 +35,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.flywaydb:flyway-database-postgresql'
+
+	// JWT (SKL-AUTHN-AUTHZ) — 버전 핀 (공통 규칙: latest/* 금지)
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
