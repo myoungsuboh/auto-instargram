@@ -161,6 +161,17 @@ watch(
                     단, 제품 카드 목록에 <strong>Instagram 이 아예 없다면</strong> 그 앱은
                     비즈니스 유형이 아니라서 쓸 수 없습니다 — 위 1단계대로 앱을 새로 만드세요.
                   </p>
+                  <p>
+                    <strong>내 앱에 Instagram 이 들어 있는지 확인하는 법</strong>:
+                    왼쪽 메뉴 <strong>게시</strong> 를 누르면 <strong>"이 앱의 이용 사례"</strong>
+                    목록이 나옵니다. 거기에 Instagram 관련 항목이 없고 광고·Threads 같은 것만
+                    있으면 그 앱으로는 릴스를 올릴 수 없습니다.
+                  </p>
+                  <p class="guide-warn">
+                    <strong>권한을 손으로 찾아 추가하지 마세요.</strong> 광고 같은 다른 이용 사례의
+                    권한 목록에는 <code>instagram_business_content_publish</code> 가 아예 없습니다.
+                    Instagram 제품을 추가하면 필요한 권한이 자동으로 함께 붙습니다.
+                  </p>
                 </li>
 
                 <li>
