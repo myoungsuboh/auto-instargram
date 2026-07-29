@@ -3,6 +3,7 @@ package com.autoinstagram.backend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Instagram Automation Backend (3_architecture.md SVC-02).
@@ -16,6 +17,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
  */
 @SpringBootApplication
 @ConfigurationPropertiesScan
+// 예약 발행 실행기(PublishWorker)가 동작하려면 스케줄링이 켜져 있어야 한다.
+// 이게 없으면 scheduledAt 을 저장만 하고 아무도 실행하지 않아 예약 발행이 죽은 기능이 된다.
+@EnableScheduling
 public class BackendApplication {
 
 	public static void main(String[] args) {

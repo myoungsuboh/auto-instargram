@@ -16,3 +16,9 @@ description: 의사결정(ADR) 색인 — 왜 그렇게 했는지. AI 빠른 인
 | ADR-0008 | 토큰 저장 암호화는 AES-256-GCM + 전용 키 환경변수 | dev (execute-dev) | 2026-07-29 12:32 | 승인됨 | [2026-07-29-token-at-rest-encryption.md](2026-07-29-token-at-rest-encryption.md) |
 | ADR-0009 | 인스타그램 토큰 교환은 재시도하지 않는다 (비멱등) | dev (execute-dev) | 2026-07-29 12:32 | 승인됨 | [2026-07-29-no-retry-on-token-exchange.md](2026-07-29-no-retry-on-token-exchange.md) |
 | ADR-0010 | 통합 테스트는 실제 PostgreSQL 에 대해 실행한다 | dev (execute-dev) | 2026-07-29 12:32 | 승인됨 | [2026-07-29-integration-tests-use-real-postgres.md](2026-07-29-integration-tests-use-real-postgres.md) |
+| ADR-0011 | 오브젝트 스토리지를 추가하지 않는다 (로컬 파일 경로 유지) | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-no-object-storage.md](2026-07-29-no-object-storage.md) |
+| ADR-0012 | 릴스 업로드는 QueueItem 애그리거트를 재사용한다 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-reels-reuse-queue-aggregate.md](2026-07-29-reels-reuse-queue-aggregate.md) |
+| ADR-0013 | 실제 게시는 백그라운드 워커가 수행한다 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-background-publish-worker.md](2026-07-29-background-publish-worker.md) |
+| ADR-0014 | POL-01 감사 추적을 별도 append-only 테이블로 분리 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-publish-attempts-audit-table.md](2026-07-29-publish-attempts-audit-table.md) |
+| ADR-0015 | 예약 선점은 조건부 UPDATE 로 원자화한다 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-atomic-queue-claim.md](2026-07-29-atomic-queue-claim.md) |
+| ADR-0016 | 멱등성은 전용 테이블로 구현한다 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-idempotency-separate-table.md](2026-07-29-idempotency-separate-table.md) |

@@ -38,6 +38,14 @@ public enum ErrorCode {
     /** 429 — SKL-AUTHN-AUTHZ 규칙 5: 로그인 실패 임계치 초과 */
     TOO_MANY_ATTEMPTS(HttpStatus.TOO_MANY_REQUESTS, "로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요"),
 
+    // ── 명세 외: 멱등성 (skills/backEnd/idempotency-idempotency.md) ────────
+    /** 409 — 규칙 4: 같은 멱등성 키의 요청이 아직 처리 중이다. */
+    REQUEST_IN_PROGRESS(HttpStatus.CONFLICT, "같은 요청이 처리 중입니다. 잠시 후 다시 확인해 주세요"),
+
+    /** 422 — 같은 멱등성 키를 다른 요청 내용에 재사용했다 (클라이언트 버그 또는 키 재사용). */
+    IDEMPOTENCY_KEY_REUSED(HttpStatus.UNPROCESSABLE_CONTENT,
+            "같은 요청 키로 다른 내용을 보낼 수 없습니다"),
+
     // ── 외부 의존 실패 (SKL-ERROR-HANDLING-RESILIENCE 규칙 2) ────────────
     /** 502 — 인스타그램 Graph API 호출 실패. 우리 버그가 아니라 외부 의존 실패임을 구분한다. */
     UPSTREAM_UNAVAILABLE(HttpStatus.BAD_GATEWAY, "외부 서비스와 통신할 수 없습니다. 잠시 후 다시 시도해 주세요"),
