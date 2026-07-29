@@ -89,20 +89,15 @@ watch(
                 먼저 준비해야 하는 것
               </h3>
               <p class="meta" style="margin-bottom: 12px">
-                이 세 가지가 없으면 토큰을 발급할 수 없습니다. 모두 무료입니다.
+                이 두 가지가 없으면 토큰을 발급할 수 없습니다. 둘 다 무료입니다.
               </p>
               <ul class="guide-list">
                 <li>
                   <strong>인스타그램 프로페셔널 계정</strong> — 비즈니스 또는 크리에이터 계정이어야
-                  합니다. 개인 계정은 API 로 게시할 수 없습니다.
+                  합니다. 개인 계정은 API 로 게시할 수 없습니다. 또한 <strong>공개 계정</strong>이어야
+                  합니다(비공개는 연결 불가).
                   <span class="guide-note">
                     바꾸는 곳: 인스타그램 앱 → 설정 → 계정 유형 및 도구 → 프로페셔널 계정으로 전환
-                  </span>
-                </li>
-                <li>
-                  <strong>페이스북 페이지</strong> — 위 인스타그램 계정과 연결되어 있어야 합니다.
-                  <span class="guide-note">
-                    확인하는 곳: 인스타그램 앱 → 설정 → 공유 및 리믹스 → 페이지 연결
                   </span>
                 </li>
                 <li>
@@ -112,6 +107,13 @@ watch(
                   </span>
                 </li>
               </ul>
+              <p class="guide-warn">
+                <strong>페이스북 페이지는 필요 없습니다.</strong> 문서 원문:
+                "이 API 설정은 Facebook 페이지를 Instagram 프로페셔널 계정에 연결할 필요가
+                없습니다." 인터넷의 인스타그램 API 자료 다수가 페이스북 페이지를 요구하는데,
+                그건 <em>Facebook 로그인</em> 방식 설명입니다 — 이 앱은
+                <em>Instagram 로그인</em> 방식을 쓰므로 해당하지 않습니다.
+              </p>
             </section>
 
             <!-- ── 단계 ───────────────────────────────────────────── -->
@@ -122,21 +124,42 @@ watch(
 
               <ol class="guide-steps">
                 <li>
-                  <strong>앱 만들기</strong>
+                  <strong>앱 만들기 — 여기서 고르는 값이 중요합니다</strong>
                   <p>
-                    developers.facebook.com → 내 앱 → <em>앱 만들기</em>.
-                    앱 유형을 물으면 <strong>비즈니스</strong>를 고르고, 앱 이름은 아무거나
-                    (예: <code>내 릴스 자동화</code>) 넣으면 됩니다.
+                    developers.facebook.com → 내 앱 → <em>앱 만들기</em>. 순서대로 이렇게 고릅니다.
+                  </p>
+                  <ul class="guide-list">
+                    <li><strong>이용 사례</strong>: <strong>기타(Other)</strong></li>
+                    <li><strong>앱 유형</strong>: <strong>비즈니스</strong></li>
+                    <li><strong>앱 이름</strong>: 아무거나 (예: <code>내 릴스 자동화</code>)</li>
+                  </ul>
+                  <p class="guide-warn">
+                    이용 사례에서 <strong>"비즈니스용 Facebook"</strong> 같은 다른 항목을 고르면
+                    다음 단계의 <strong>Instagram 제품이 목록에 나타나지 않습니다.</strong>
+                    반드시 <strong>기타(Other)</strong> 를 고르세요. 문서 원문:
+                    "Instagram 제품에 액세스할 수 있는 앱을 만들려면 Other 이용 사례를 선택합니다."
                   </p>
                 </li>
 
                 <li>
                   <strong>Instagram 제품 추가</strong>
                   <p>
-                    만든 앱의 대시보드에서 왼쪽 메뉴의 <strong>Instagram</strong> 을 찾아 추가합니다.
-                    추가되면 왼쪽에
-                    <strong>Instagram → API setup with Instagram business login</strong>
-                    (한국어 화면에서는 "Instagram 비즈니스 로그인으로 API 설정") 메뉴가 나타납니다.
+                    왼쪽 메뉴가 아니라 <strong>대시보드 화면 본문</strong>에 있습니다.
+                    왼쪽 맨 위 <strong>대시보드</strong> 를 누르고, 그 페이지를
+                    <strong>아래로 쭉 스크롤</strong>하면 추가할 수 있는 제품 카드들이 나옵니다.
+                    거기서 <strong>Instagram</strong> 카드의 <strong>설정</strong>(Set up) 을 누릅니다.
+                  </p>
+                  <p>
+                    그러면 "Instagram 로그인을 통한 API 설정"이 자동으로 추가되고,
+                    <strong>그때 비로소 왼쪽 메뉴에 Instagram 이 생깁니다</strong>
+                    (<strong>Instagram → Instagram 로그인으로 API 설정</strong>,
+                    영어 화면에서는 <em>API setup with Instagram business login</em>).
+                  </p>
+                  <p class="guide-warn">
+                    <strong>이미 만든 앱에 추가하려는 경우</strong>도 이 단계부터 하면 됩니다
+                    (문서: "기존 앱에 Instagram을 추가하려면 6단계부터 시작하세요").
+                    단, 제품 카드 목록에 <strong>Instagram 이 아예 없다면</strong> 그 앱은
+                    비즈니스 유형이 아니라서 쓸 수 없습니다 — 위 1단계대로 앱을 새로 만드세요.
                   </p>
                 </li>
 
@@ -146,6 +169,10 @@ watch(
                     그 메뉴에서 내 인스타그램 계정을 연결한 뒤, 계정 옆의
                     <strong>Generate token</strong>(토큰 생성) 을 누릅니다.
                     인스타그램 로그인 창이 뜨고 권한을 허용하면 <strong>토큰 문자열</strong>이 나옵니다.
+                  </p>
+                  <p>
+                    연결할 계정은 <strong>공개 상태</strong>여야 합니다 — 비공개 계정은
+                    연결되지 않습니다 (문서: "이 계정은 공개 상태여야 합니다").
                   </p>
                   <p class="guide-warn">
                     이렇게 받은 토큰은 <strong>1시간만</strong> 유효한 "단기 토큰"입니다.
@@ -236,6 +263,20 @@ INSTAGRAM_PUBLISH_ENABLED=true</pre>
                 아래 문서가 최신입니다.
               </p>
               <ul class="guide-list guide-sources">
+                <li>
+                  <a
+                    href="https://developers.facebook.com/docs/instagram-platform/create-an-instagram-app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >앱 만들기 — 이용 사례 선택과 Instagram 제품 추가 (1·2단계의 출처)</a>
+                </li>
+                <li>
+                  <a
+                    href="https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >Instagram 로그인 방식 개요 — 페이스북 페이지 불필요 근거</a>
+                </li>
                 <li>
                   <a
                     href="https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/get-started"
