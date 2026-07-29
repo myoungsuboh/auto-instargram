@@ -6,6 +6,9 @@ tags: [decision]
 # ADR-0022: 인스타그램 연동은 "Instagram Login" 경로를 쓴다
 
 - 기록일: 2026-07-29 16:27
+- 갱신: 2026-07-29 — 실제 발급을 시도하다 막혀 공식 문서를 재확인했다.
+  결정 자체는 그대로이고, 빠져 있던 **후속 제약 3건**(앱 생성 시 이용 사례·앱 유형,
+  페이스북 페이지 불필요, 권한 수동 추가 불가)과 출처 2건을 추가했다.
 - 상태: 승인됨
 - 단계(Origin): dev (execute-dev)
 - 관련 spec: [1_spack.md — API-04 / API-05](../../1_spack.md), [3_architecture.md — SVC-02 외부 의존성](../../3_architecture.md)
@@ -63,6 +66,20 @@ Facebook Login 경로의 이점(페이지 인사이트 등)은 명세가 요구�
     인터넷의 인스타그램 API 자료 다수가 Facebook Login 경로를 설명하므로 특히 혼동하기 쉽다.
   - `INSTAGRAM_USER_ID` 는 **페이스북 페이지 ID 가 아니라** `GET https://graph.instagram.com/v25.0/me?fields=user_id,username`
     가 돌려주는 값이다.
+  - **Meta 앱을 만들 때 이용 사례로 `기타(Other)`, 앱 유형으로 `비즈니스`를 골라야 한다.**
+    다른 이용 사례(예: "비즈니스용 Facebook", 마케팅 API 광고)로 만든 앱에는
+    Instagram 제품이 목록에 나타나지 않고, 왼쪽 메뉴에 Instagram 이 생기지 않는다.
+    공식 문서 3단계: "Instagram 제품에 액세스할 수 있는 앱을 만들려면 Other 이용 사례를 선택합니다",
+    4단계: "Instagram 제품을 추가하려면 앱이 비즈니스 유형 앱이어야 합니다".
+    Instagram 제품은 **왼쪽 메뉴가 아니라 대시보드 화면 본문을 아래로 스크롤**해
+    제품 카드의 "설정"을 눌러 추가한다. 기존 앱에 추가할 때도 이 단계부터 하면 된다.
+    자기 앱에 Instagram 이 들어 있는지는 **게시(go_live) 페이지의 "이 앱의 이용 사례"** 목록으로 확인한다.
+  - **페이스북 페이지는 필요 없다.** 문서 원문: "이 API 설정은 Facebook 페이지를
+    Instagram 프로페셔널 계정에 연결할 필요가 없습니다." 페이지 연결은 Facebook Login
+    경로의 조건이다 — 위 "두 경로를 섞지 말 것"의 구체적인 사례다.
+    연결할 인스타그램 계정은 **공개 상태**여야 한다.
+  - 다른 이용 사례의 권한 목록에서 `instagram_*` 권한을 손으로 찾아 추가할 수 없다.
+    Instagram 제품을 추가하면 필요·권장 권한이 자동으로 붙는다.
   - 게시 한도는 **24시간 이동 기준 100건**이다 (공식 문서 명시).
     구현 초기에 근거 없이 25 로 넣었던 것을 이 조사에서 바로잡았다.
   - `PublishingLimitGuard` 는 **우리 이력 기준의 사전 점검**이다. 권위 있는 잔여 한도는
@@ -72,6 +89,10 @@ Facebook Login 경로의 이점(페이지 인사이트 등)은 명세가 요구�
 
 ## 출처
 
+- [Create an Instagram App (이용 사례 선택·Instagram 제품 추가·토큰 생성 단계)](https://developers.facebook.com/docs/instagram-platform/create-an-instagram-app/)
+  — 2026-07-29 추가 확인. "이용 사례 = Other, 앱 유형 = 비즈니스" 제약의 출처.
+- [Instagram API with Instagram Login (개요)](https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login)
+  — "페이스북 페이지 불필요" 근거.
 - [Instagram API with Instagram Login — Get Started](https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/get-started)
 - [Access Token 참조 (수명·교환)](https://developers.facebook.com/docs/instagram-platform/reference/access_token/)
 - [Content Publishing (권한·100건 한도)](https://developers.facebook.com/docs/instagram-platform/content-publishing)
