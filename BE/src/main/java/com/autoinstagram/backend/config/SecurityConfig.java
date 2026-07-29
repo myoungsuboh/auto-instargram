@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
  * 인증·인가 설정. SKL-AUTHN-AUTHZ 규칙 3(권한 검증은 반드시 서버 측에서)의 구현 지점이다.
@@ -33,16 +34,25 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
+                          RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                          CorsConfigurationSource corsConfigurationSource) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // ── CORS ──────────────────────────────────────────────────
+                // 화면(5173)과 API(8080)는 포트가 달라 교차 출처다. 이 설정이 없으면
+                // 브라우저가 모든 호출을 차단한다.
+                // 허용 출처는 CorsConfig 가 특정하며, 와일드카드는 기동 시점에 거부된다(ADR-0006).
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+
                 // ── CSRF ──────────────────────────────────────────────────
                 // 토큰 방식 CSRF 를 쓰지 않는 근거: 이 API 는 폼이 아니라 JSON 전용이고,
                 // 인증 쿠키에 SameSite=Strict 를 걸어 다른 사이트에서 시작된 요청에는

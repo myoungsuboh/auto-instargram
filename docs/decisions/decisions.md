@@ -24,3 +24,4 @@ description: 의사결정(ADR) 색인 — 왜 그렇게 했는지. AI 빠른 인
 | ADR-0016 | 멱등성은 전용 테이블로 구현한다 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-idempotency-separate-table.md](2026-07-29-idempotency-separate-table.md) |
 | ADR-0017 | 바이너리 사전 검증의 범위를 한정한다 | dev (execute-dev) | 2026-07-29 14:34 | 승인됨 | [2026-07-29-binary-validation-scope.md](2026-07-29-binary-validation-scope.md) |
 | ADR-0018 | 미디어 해시는 파일을 읽을 수 없으면 경로 기준으로 대체한다 | dev (execute-dev) | 2026-07-29 14:34 | 승인됨 | [2026-07-29-media-hash-fallback.md](2026-07-29-media-hash-fallback.md) |
+| ADR-0019 | 릴스 화면은 업로드와 토큰 갱신을 모두 제공한다 | dev (execute-dev) | 2026-07-29 14:55 | 승인됨 | [2026-07-29-reels-screen-both-apis.md](2026-07-29-reels-screen-both-apis.md) |
