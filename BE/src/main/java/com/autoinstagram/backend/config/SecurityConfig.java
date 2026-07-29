@@ -35,13 +35,16 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final TransportSecurityConfig transportSecurityConfig;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           RestAuthenticationEntryPoint restAuthenticationEntryPoint,
-                          CorsConfigurationSource corsConfigurationSource) {
+                          CorsConfigurationSource corsConfigurationSource,
+                          TransportSecurityConfig transportSecurityConfig) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
         this.corsConfigurationSource = corsConfigurationSource;
+        this.transportSecurityConfig = transportSecurityConfig;
     }
 
     @Bean
@@ -100,6 +103,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // 전송 보안 헤더(HSTS·CSP·클릭재킹·MIME 스니핑)는 별도 클래스가 일괄 적용한다
+        // (SKL-TRANSPORT-SECURITY 규칙 6: 한곳에서 일괄 적용).
+        // 인증 설정과 섞어 두면 어느 쪽을 고치는지 알기 어려워지므로 분리했다.
+        transportSecurityConfig.apply(http);
 
         return http.build();
     }
