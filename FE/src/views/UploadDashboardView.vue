@@ -243,7 +243,12 @@ onMounted(loadQueues)
           style="margin-top: 24px"
         />
 
-        <p v-else-if="loading" class="meta" style="margin-top: 24px" role="status">
+        <p
+          v-else-if="loading"
+          class="loading-block"
+          style="margin-top: 24px"
+          role="status"
+        >
           불러오는 중…
         </p>
 

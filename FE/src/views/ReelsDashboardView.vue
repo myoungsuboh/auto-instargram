@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import NoticeBanner from '../components/NoticeBanner.vue'
+import TokenGuideModal from '../components/TokenGuideModal.vue'
 import { newIdempotencyKey, toDisplayError } from '../api/client'
 import { reels, tokens } from '../api/endpoints'
 import { isAdmin } from '../stores/session'
@@ -50,6 +51,14 @@ async function submitUpload() {
 }
 
 // ══ 인스타그램 토큰 갱신 (API-05, 관리자 전용) ═════════════════════════
+
+/**
+ * 토큰 발급 방법 안내 모달.
+ *
+ * 별도 화면이 아니라 모달로 둔 이유: 토큰을 넣는 칸을 보면서 안내를 읽어야 하고,
+ * 읽다가 화면을 떠나면 입력하던 값을 잃는다.
+ */
+const guideOpen = ref(false)
 
 const shortLivedToken = ref('')
 const refreshing = ref(false)
@@ -171,9 +180,16 @@ async function submitRefresh() {
 
       <!-- ══ 토큰 갱신 (API-05, 관리자 전용) ══════════════════════ -->
       <section class="card" aria-labelledby="token-heading">
-        <h2 id="token-heading" class="section-title">
-          인스타그램 토큰
-        </h2>
+        <div class="spread">
+          <h2 id="token-heading" class="section-title">
+            인스타그램 토큰
+          </h2>
+          <!-- 토큰 발급은 Meta 개발자 콘솔을 거쳐야 해서 처음에는 막막하다.
+               입력 칸 바로 옆에서 안내를 열 수 있게 둔다. -->
+          <button type="button" class="button-text" @click="guideOpen = true">
+            어떻게 받나요?
+          </button>
+        </div>
         <p class="lede" style="margin-top: 16px">
           단기 토큰을 60일짜리 장기 토큰으로 교환해 안전하게 저장합니다. 토큰이
           만료되면 릴스 게시가 실패합니다.
@@ -240,5 +256,9 @@ async function submitRefresh() {
         </template>
       </section>
     </div>
+
+    <!-- 토큰 발급 안내 (Meta 공식 문서 기준). Teleport 로 body 에 붙어
+         이 화면의 레이아웃·스크롤에 영향을 주지 않는다. -->
+    <TokenGuideModal :open="guideOpen" @close="guideOpen = false" />
   </div>
 </template>

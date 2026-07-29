@@ -145,7 +145,7 @@ onMounted(load)
       style="margin-bottom: 32px"
     />
 
-    <p v-else-if="loading" class="meta" role="status">
+    <p v-else-if="loading" class="loading-block" role="status">
       불러오는 중…
     </p>
 

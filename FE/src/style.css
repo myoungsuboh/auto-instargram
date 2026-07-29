@@ -418,6 +418,25 @@ body {
   color: var(--muted);
 }
 
+/* ── Loading placeholder ─────────────────────────────────────────────
+   불러오는 동안 자리를 미리 확보한다.
+   짧은 "불러오는 중…" 한 줄만 두면 데이터가 도착할 때 페이지가 갑자기 길어져
+   내용이 아래로 밀린다(레이아웃 이동 = 눈에 보이는 덜컹거림).
+   실제 콘텐츠와 비슷한 높이를 미리 잡아 두면 그 점프가 사라진다. */
+
+.loading-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--canvas-raised);
+}
+
 /* ── Empty & notice states ───────────────────────────────────────────*/
 
 .empty {
@@ -472,8 +491,28 @@ body {
 }
 
 /* ── Motion ──────────────────────────────────────────────────────────
-   스킬: opacity 0→1 + translateY 24px, 500ms ease-out, 1회만 */
+   스킬 §5 는 두 가지를 구분한다. 섞어 쓰면 안 된다:
+     · 페이지 전환    → 300ms 페이드
+     · 스크롤 등장    → opacity 0→1 + translateY 24px, 500ms, 1회만
+*/
 
+/* 페이지 전환: 300ms 페이드 (나가기 120 + 들어오기 180).
+   opacity 만 바꾼다 — transform 이나 높이를 건드리면 전환마다 레이아웃이 튄다. */
+.page-leave-active {
+  transition: opacity 120ms ease-in;
+}
+
+.page-enter-active {
+  transition: opacity 180ms ease-out;
+}
+
+.page-leave-to,
+.page-enter-from {
+  opacity: 0;
+}
+
+/* 스크롤 등장: 개별 콘텐츠 블록이 처음 나타날 때 1회만 쓴다.
+   ⚠️ 라우트 전환에 쓰지 말 것 — 매번 24px 밀려 올라와 느리고 덜컹거린다. */
 .enter {
   animation: enter 500ms ease-out both;
 }
@@ -499,6 +538,196 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── Modal ───────────────────────────────────────────────────────────
+   디자인 스킬의 무채색·여백 원칙을 유지하되, 읽어야 하는 안내문이므로
+   본문 폭을 좁혀 가독성을 확보한다. */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  overflow-y: auto;
+  /* 뒤 배경을 어둡게 — 웜 톤을 유지하기 위해 검정 대신 웜 브라운 계열 */
+  background: rgba(51, 41, 31, 0.45);
+}
+
+.modal {
+  width: 100%;
+  max-width: 720px;
+  background: var(--canvas);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  outline: none;
+  /* 모달은 예외적으로 그림자를 쓴다 — 배경 위에 떠 있음을 알려야 한다 */
+  box-shadow: 0 12px 40px rgba(51, 41, 31, 0.18);
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: var(--canvas);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.modal-close {
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.modal-body {
+  padding: var(--space-6);
+}
+
+.modal-footer {
+  padding: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 모달 등장: 짧은 페이드. 크게 움직이면 읽기 시작이 늦어진다. */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 180ms ease-out;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+/* ── Guide content (모달 안 안내문) ───────────────────────────────────*/
+
+.guide-section {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+.guide-section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.guide-heading {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 400;
+  margin: 0 0 var(--space-4);
+}
+
+.guide-list {
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.guide-list > li {
+  margin-bottom: var(--space-4);
+}
+
+.guide-list > li:last-child {
+  margin-bottom: 0;
+}
+
+.guide-steps {
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: 14px;
+  line-height: 1.75;
+  counter-reset: none;
+}
+
+.guide-steps > li {
+  margin-bottom: var(--space-6);
+}
+
+.guide-steps > li:last-child {
+  margin-bottom: 0;
+}
+
+.guide-steps p {
+  margin: var(--space-2) 0 0;
+}
+
+/* 화면에서 찾아야 하는 위치 — 본문과 구분되게 한 단 낮춘 톤 */
+.guide-note {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.guide-warn {
+  margin-top: var(--space-3) !important;
+  padding: var(--space-3) var(--space-4);
+  font-size: 13px;
+  border-left: 3px solid var(--state-pending);
+  background: var(--state-pending-bg);
+  color: var(--state-pending);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* 그대로 입력하거나 복사해야 하는 값 */
+.guide-code {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--canvas-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  /* 긴 주소가 모달을 밀지 않게 가로 스크롤 */
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.guide-sources a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.modal-body code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 1px 5px;
+  background: var(--canvas-raised);
+  border: 1px solid var(--line);
+  border-radius: 4px;
 }
 
 /* ── Utilities ───────────────────────────────────────────────────────*/
