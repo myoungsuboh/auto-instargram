@@ -25,7 +25,16 @@ async function handleSubmit() {
   error.value = null
   submitting.value = true
   try {
-    await login(username.value, password.value)
+    // 비밀번호의 앞뒤 공백을 제거한다.
+    //
+    // 왜 필요한가: 비밀번호를 붙여넣을 때 공백이나 줄바꿈이 딸려 오는 일이 흔하고,
+    // 그 문자는 입력란에서 <b>보이지 않는다</b>. 그러면 사용자는 올바른 비밀번호를 넣었다고
+    // 믿는데 "아이디 또는 비밀번호가 올바르지 않습니다"만 보게 된다(실제로 겪은 문제다).
+    //
+    // 왜 안전한가: 이 시스템의 계정 비밀번호는 환경변수(SEED_*_PASSWORD)로만 만들어지고,
+    // 스프링의 properties 파서가 앞뒤 공백을 이미 제거한다 — 즉 앞뒤 공백이 <b>의미를 갖는</b>
+    // 비밀번호는 애초에 존재할 수 없다. 따라서 제거해도 로그인 가능한 조합이 줄지 않는다.
+    await login(username.value, password.value.trim())
     // 로그인 전에 가려던 곳이 있으면 그곳으로, 없으면 기본 화면으로
     await router.push(route.query.redirect || { name: 'upload' })
   } catch (caught) {
@@ -63,6 +72,19 @@ async function handleSubmit() {
         :code="error.code"
         style="margin-bottom: 24px"
       />
+
+      <!-- 자가 진단 안내.
+           서버 메시지만으로는 무엇을 고쳐야 할지 알 수 없어 사용자가 같은 실패를 반복한다.
+           계정 존재 여부를 알려주지 않는 <b>일반적인</b> 확인 항목만 제시한다. -->
+      <ul
+        v-if="error?.code === 'INVALID_CREDENTIALS'"
+        class="meta"
+        style="margin: -8px 0 24px; padding-left: 20px"
+      >
+        <li>아이디는 대소문자를 구분합니다.</li>
+        <li>한글 입력 상태(한/영)와 Caps Lock 을 확인해 주세요.</li>
+        <li>붙여넣기했다면 앞뒤에 공백이 섞이지 않았는지 확인해 주세요.</li>
+      </ul>
 
       <label class="field">
         <span class="meta-label">아이디</span>
