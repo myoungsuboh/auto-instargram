@@ -22,3 +22,5 @@ description: 의사결정(ADR) 색인 — 왜 그렇게 했는지. AI 빠른 인
 | ADR-0014 | POL-01 감사 추적을 별도 append-only 테이블로 분리 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-publish-attempts-audit-table.md](2026-07-29-publish-attempts-audit-table.md) |
 | ADR-0015 | 예약 선점은 조건부 UPDATE 로 원자화한다 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-atomic-queue-claim.md](2026-07-29-atomic-queue-claim.md) |
 | ADR-0016 | 멱등성은 전용 테이블로 구현한다 | dev (execute-dev) | 2026-07-29 14:31 | 승인됨 | [2026-07-29-idempotency-separate-table.md](2026-07-29-idempotency-separate-table.md) |
+| ADR-0017 | 바이너리 사전 검증의 범위를 한정한다 | dev (execute-dev) | 2026-07-29 14:34 | 승인됨 | [2026-07-29-binary-validation-scope.md](2026-07-29-binary-validation-scope.md) |
+| ADR-0018 | 미디어 해시는 파일을 읽을 수 없으면 경로 기준으로 대체한다 | dev (execute-dev) | 2026-07-29 14:34 | 승인됨 | [2026-07-29-media-hash-fallback.md](2026-07-29-media-hash-fallback.md) |
