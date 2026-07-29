@@ -14,6 +14,10 @@ tags: [decision]
   같은 날 재정정: 처음에는 "기존 앱 재사용은 신뢰할 수 없고 새 앱이 확실하다"고 적었는데,
   **"이용 사례 추가" 목록에 Instagram 이용 사례가 실제로 있었다.** 기존 앱도 가능하다 —
   잘못된 일반화를 바로잡고 정확한 경로(추가 버튼 → 이용 사례 이름)를 적었다.
+- 갱신: 2026-07-30 (3차) — API 설정 화면을 실제로 열어 보고 두 가지를 바로잡았다.
+  `client_secret` 은 **Instagram 앱 시크릿**이며(Facebook 앱 시크릿이 아니다),
+  `instagram_business_content_publish` 는 **자동으로 붙지 않아 직접 추가해야 한다.**
+  둘 다 틀리면 각각 토큰 교환과 게시가 실패하는 항목이다.
 - 상태: 승인됨
 - 단계(Origin): dev (execute-dev)
 - 관련 spec: [1_spack.md — API-04 / API-05](../../1_spack.md), [3_architecture.md — SVC-02 외부 의존성](../../3_architecture.md)
@@ -62,7 +66,7 @@ Facebook Login 경로의 이점(페이지 인사이트 등)은 명세가 요구�
 
 ## 영향 (Consequences)
 
-- 긍정: 사용자 안내가 7단계로 끝난다(모달로 제공). 코드와 문서가 같은 경로를 가리켜 어긋나지 않는다.
+- 긍정: 사용자 안내가 8단계로 끝난다(모달로 제공). 코드와 문서가 같은 경로를 가리켜 어긋나지 않는다.
   `.env` 항목 이름(`INSTAGRAM_USER_ID`, `INSTAGRAM_CLIENT_SECRET`)도 이 경로에 대응한다.
 - 트레이드오프/비용: 페이스북 페이지 단위 기능으로 확장하려면 연동을 새로 만들어야 한다.
 - 후속 제약 (중요):
@@ -93,9 +97,26 @@ Facebook Login 경로의 이점(페이지 인사이트 등)은 명세가 요구�
     can be added to the same app").
     또한 이미 있는 이용 사례(광고 등)를 눌러 들어가 권한 목록에서 `instagram_*` 를
     찾으려 해도 없다 — 실제로 이 경로로 두 번 막혔다.
-  - 이용 사례를 추가한 뒤 왼쪽 메뉴에 나타나는 두 설정 중 반드시
-    **"Instagram 로그인으로 API 설정"** 을 써야 한다.
-    "Facebook 로그인으로 API 설정" 은 이 프로젝트가 쓰지 않는 경로다(위 표 참조).
+  - 이용 사례를 추가한 뒤 왼쪽에 나타나는 두 설정 중 반드시
+    **"Instagram 로그인이 포함된 API 설정"** 을 써야 한다.
+    "Facebook 로그인이 포함된 API 설정" 은 이 프로젝트가 쓰지 않는 경로다(위 표 참조).
+  - ⚠️ **`INSTAGRAM_CLIENT_SECRET` 은 "Instagram 앱 시크릿 코드" 다 — Facebook 앱 시크릿이 아니다.**
+    2026-07-30 실측: "Instagram 로그인이 포함된 API 설정" 화면 맨 위에
+    **Instagram 앱 이름 / Instagram 앱 ID / Instagram 앱 시크릿 코드** 가 별도로 있다.
+    `access_token` 문서가 `client_secret` 을 "앱 대시보드에서 **Instagram 앱의 비밀**"로
+    규정하므로 이 값을 써야 한다. `앱 설정 → 기본 설정` 의 앱 시크릿(Facebook 앱 쪽)을
+    넣으면 `ig_exchange_token` 교환이 실패한다.
+  - ⚠️ **`instagram_business_content_publish` 는 자동으로 붙지 않는다.**
+    2026-07-30 실측: API 설정 화면 1번 항목 "필수 **메시지** 권한 추가"의
+    `Add all required permissions` 가 넣어 주는 것은
+    `instagram_business_basic`·`instagram_business_manage_comments`·`instagram_business_manage_messages`
+    세 개뿐이다. **릴스 게시에 필요한 `instagram_business_content_publish` 가 빠져 있어**
+    왼쪽 **권한 및 기능** 페이지에서 직접 추가해야 한다.
+    (create-an-instagram-app 문서 10단계의 권한 목록에는 포함돼 있지만, 그것은
+    앱 검수 제출 시 목록이고 API 설정 화면의 자동 추가 대상은 아니다.)
+  - 이 프로젝트가 **쓰지 않는** API 설정 화면 항목: Webhooks 구성(웹훅 미사용),
+    Instagram 비즈니스 로그인 설정(OAuth 리다이렉트 미구현 — Generate token 방식),
+    앱 검수(본인 계정에만 게시).
   - **페이스북 페이지는 필요 없다.** 문서 원문: "이 API 설정은 Facebook 페이지를
     Instagram 프로페셔널 계정에 연결할 필요가 없습니다." 페이지 연결은 Facebook Login
     경로의 조건이다 — 위 "두 경로를 섞지 말 것"의 구체적인 사례다.

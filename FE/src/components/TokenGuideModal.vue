@@ -144,62 +144,69 @@ watch(
                 <li>
                   <strong>Instagram 제품 추가</strong>
                   <p>
-                    왼쪽 메뉴가 아니라 <strong>대시보드 화면 본문</strong>에 있습니다.
-                    왼쪽 맨 위 <strong>대시보드</strong> 를 누르고, 그 페이지를
-                    <strong>아래로 쭉 스크롤</strong>하면 추가할 수 있는 제품 카드들이 나옵니다.
-                    거기서 <strong>Instagram</strong> 카드의 <strong>설정</strong>(Set up) 을 누릅니다.
+                    앱이 <strong>새로 만든 것인지, 원래 쓰던 것인지</strong>에 따라 화면이 다릅니다.
+                  </p>
+                  <ul class="guide-list">
+                    <li>
+                      <strong>갓 만든 앱</strong> — 왼쪽 맨 위 <strong>대시보드</strong> 를 누르고
+                      그 페이지를 <strong>아래로 쭉 스크롤</strong>하면 추가할 수 있는 제품 카드들이
+                      나옵니다. <strong>Instagram</strong> 카드의 <strong>설정</strong>(Set up) 을 누릅니다.
+                    </li>
+                    <li>
+                      <strong>원래 다른 용도(광고 등)로 쓰던 앱</strong> — 대시보드에 제품 카드가 없고
+                      <em>"앱 맞춤 설정 및 요건"</em> 목록만 보입니다. 이때는 오른쪽 위
+                      <strong>이용 사례 추가</strong> 를 누르고, 목록을 아래로 스크롤해
+                      <strong>"Instagram에서 메시지 및 콘텐츠 관리"</strong> 를 체크한 뒤
+                      <strong>저장</strong>합니다. 광고 이용 사례가 이미 있는 앱에도 추가됩니다.
+                    </li>
+                  </ul>
+                  <p>
+                    어느 쪽이든 끝나면 <strong>이용 사례</strong> 목록에
+                    "Instagram에서 메시지 및 콘텐츠 관리" 가 생깁니다. 그 항목의
+                    <strong>맞춤 설정</strong> 을 누르면 다음 단계 화면으로 들어갑니다.
                   </p>
                   <p class="guide-warn">
-                    <strong>대시보드에 제품 카드가 없고 "앱 맞춤 설정 및 요건" 목록만 보인다면</strong>,
-                    그 앱은 이미 다른 용도(광고·Threads 등)로 설정된 앱입니다.
-                    제품 카드는 <em>갓 만든 앱</em>의 대시보드에만 나옵니다. 이 경우
-                    오른쪽 위 <strong>이용 사례 추가</strong> 를 누르고, 목록에서
-                    <strong>"Instagram에서 메시지 및 콘텐츠 관리"</strong> 를 체크한 뒤
-                    <strong>저장</strong>하면 됩니다 (목록 아래쪽에 있어 스크롤해야 보입니다).
-                    이것이 Meta 문서가 말하는 그 이용 사례입니다.
-                  </p>
-                  <p class="guide-warn">
-                    <strong>이미 있는 이용 사례(광고 등)를 눌러 들어가면 안 됩니다</strong> —
-                    그 안의 권한 목록에는 인스타그램 권한이 없습니다.
-                  </p>
-                  <p class="guide-warn">
-                    왼쪽 메뉴에 Instagram 이 생기면 설정 방식이 두 개 보입니다.
-                    반드시 <strong>"Instagram 로그인으로 API 설정"</strong>
-                    (<em>API setup with Instagram business login</em>) 을 쓰세요.
-                    <strong>"Facebook 로그인으로 API 설정" 은 쓰지 마세요</strong> —
+                    그 화면 왼쪽에 설정 방식이 두 개 있습니다. 반드시
+                    <strong>"Instagram 로그인이 포함된 API 설정"</strong>
+                    (<em>API setup with Instagram login</em>) 을 쓰세요.
+                    <strong>"Facebook 로그인이 포함된 API 설정" 은 쓰지 마세요</strong> —
                     이 프로그램은 <code>graph.instagram.com</code> 방식이라 토큰 종류가 달라
                     작동하지 않습니다.
                   </p>
-                  <p>
-                    그러면 "Instagram 로그인을 통한 API 설정"이 자동으로 추가되고,
-                    <strong>그때 비로소 왼쪽 메뉴에 Instagram 이 생깁니다</strong>
-                    (<strong>Instagram → Instagram 로그인으로 API 설정</strong>,
-                    영어 화면에서는 <em>API setup with Instagram business login</em>).
-                  </p>
                   <p class="guide-warn">
-                    <strong>이미 만든 앱에 추가하려는 경우</strong>도 이 단계부터 하면 됩니다
-                    (문서: "기존 앱에 Instagram을 추가하려면 6단계부터 시작하세요").
-                    단, 제품 카드 목록에 <strong>Instagram 이 아예 없다면</strong> 그 앱은
-                    비즈니스 유형이 아니라서 쓸 수 없습니다 — 위 1단계대로 앱을 새로 만드세요.
+                    <strong>이미 있는 이용 사례(광고 등)를 눌러 들어가 권한을 찾지 마세요.</strong>
+                    그 권한 목록에는 <code>instagram_business_content_publish</code> 가 아예 없습니다.
+                    인스타그램 권한은 위 이용 사례를 추가한 뒤 그 안에서 다룹니다(다음 단계).
                   </p>
                   <p>
-                    <strong>내 앱에 Instagram 이 들어 있는지 확인하는 법</strong>:
-                    왼쪽 메뉴 <strong>게시</strong> 를 누르면 <strong>"이 앱의 이용 사례"</strong>
-                    목록이 나옵니다. 거기에 Instagram 관련 항목이 없고 광고·Threads 같은 것만
-                    있으면 그 앱으로는 릴스를 올릴 수 없습니다.
+                    <strong>내 앱에 들어 있는지 확인하는 법</strong>: 왼쪽 메뉴
+                    <strong>이용 사례</strong> (또는 <strong>게시</strong>) 를 누르면 이 앱의
+                    이용 사례 목록이 나옵니다. 거기에 Instagram 항목이 있으면 준비된 것입니다.
+                  </p>
+                </li>
+
+                <li>
+                  <strong>필요한 권한 추가 — 두 곳에서 해야 합니다</strong>
+                  <p>
+                    "Instagram 로그인이 포함된 API 설정" 화면의 <strong>1번 항목</strong>에서
+                    <strong>Add all required permissions</strong> 를 누릅니다.
+                    이것으로 <code>instagram_business_basic</code> 등 기본 권한이 붙습니다.
                   </p>
                   <p class="guide-warn">
-                    <strong>권한을 손으로 찾아 추가하지 마세요.</strong> 광고 같은 다른 이용 사례의
-                    권한 목록에는 <code>instagram_business_content_publish</code> 가 아예 없습니다.
-                    Instagram 제품을 추가하면 필요한 권한이 자동으로 함께 붙습니다.
+                    <strong>그다음이 중요합니다.</strong> 1번이 넣어 주는 것은
+                    <em>메시지·댓글</em> 권한이라
+                    <strong>릴스 게시에 필요한 <code>instagram_business_content_publish</code> 가
+                      빠져 있습니다.</strong> 왼쪽 <strong>권한 및 기능</strong> 페이지로 가서
+                    이 권한을 직접 추가하세요. 없으면 게시가 거부됩니다.
                   </p>
                 </li>
 
                 <li>
                   <strong>계정 연결하고 토큰 생성</strong>
                   <p>
-                    그 메뉴에서 내 인스타그램 계정을 연결한 뒤, 계정 옆의
-                    <strong>Generate token</strong>(토큰 생성) 을 누릅니다.
+                    같은 화면 <strong>2번 "액세스 토큰 생성"</strong> 에서
+                    <strong>계정 추가</strong> 를 눌러 내 인스타그램 계정을 연결한 뒤,
+                    계정 옆의 <strong>토큰 생성</strong>(Generate token) 을 누릅니다.
                     인스타그램 로그인 창이 뜨고 권한을 허용하면 <strong>토큰 문자열</strong>이 나옵니다.
                   </p>
                   <p>
@@ -213,10 +220,19 @@ watch(
                 </li>
 
                 <li>
-                  <strong>앱 시크릿 복사</strong>
+                  <strong>Instagram 앱 시크릿 복사</strong>
                   <p>
-                    왼쪽 메뉴 <strong>앱 설정 → 기본 설정</strong> 에서
-                    <strong>앱 시크릿 코드</strong>의 <em>표시</em> 를 눌러 값을 복사합니다.
+                    같은 "Instagram 로그인이 포함된 API 설정" 화면 <strong>맨 위</strong>에
+                    <strong>Instagram 앱 이름 · Instagram 앱 ID · Instagram 앱 시크릿 코드</strong>
+                    가 있습니다. <strong>Instagram 앱 시크릿 코드</strong>의 <em>표시</em> 를
+                    눌러 값을 복사합니다.
+                  </p>
+                  <p class="guide-warn">
+                    <strong>앱 설정 → 기본 설정의 "앱 시크릿 코드"가 아닙니다.</strong>
+                    그것은 Facebook 앱의 시크릿이고, 여기서 필요한 것은
+                    <strong>Instagram 앱</strong>의 시크릿입니다. Meta 문서가
+                    <code>client_secret</code> 을 "앱 대시보드에서 Instagram 앱의 비밀"로
+                    규정합니다 — 잘못 넣으면 토큰 교환이 실패합니다.
                   </p>
                   <p>
                     이 값을 프로젝트 폴더의 <code>.env</code> 파일에 넣습니다:
@@ -266,6 +282,15 @@ INSTAGRAM_PUBLISH_ENABLED=true</pre>
                 알아두면 좋은 것
               </h3>
               <ul class="guide-list">
+                <li>
+                  <strong>API 설정 화면에서 건너뛰어도 되는 항목</strong>이 있습니다.
+                  <span class="guide-note">
+                    · <strong>Webhooks 구성</strong> — 이 프로그램은 웹훅을 쓰지 않습니다<br>
+                    · <strong>Instagram 비즈니스 로그인 설정</strong> — 리다이렉트 로그인을
+                    구현하지 않고 "토큰 생성" 방식을 씁니다<br>
+                    · <strong>앱 검수 완료</strong> — 본인 계정에만 올리면 필요 없습니다
+                  </span>
+                </li>
                 <li>
                   <strong>60일마다 갱신해야 합니다.</strong> 장기 토큰은 60일 뒤 만료되고
                   자동으로 연장되지 않습니다. 만료되면 게시가 실패하고 이력에 오류로 남습니다.

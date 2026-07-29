@@ -100,7 +100,7 @@ docker compose -f docker-compose.dev.yml down -v
 ```
 INSTAGRAM_PUBLISH_ENABLED=true
 INSTAGRAM_USER_ID=<인스타그램 계정 번호 — 페이스북 페이지 ID 가 아닙니다>
-INSTAGRAM_CLIENT_SECRET=<Meta 앱 시크릿>
+INSTAGRAM_CLIENT_SECRET=<Instagram 앱 시크릿 — Facebook 앱 시크릿이 아닙니다>
 ```
 
 그리고 화면의 **릴스 → 토큰 갱신**에서 단기 토큰을 넣어 장기 토큰으로 교환하세요.
@@ -125,8 +125,17 @@ Meta 공식 문서 기준의 발급 절차가 단계별로 나옵니다 (15~20�
 > 제품 카드가 없고 "앱 맞춤 설정 및 요건" 목록만 보이는데, 오른쪽 위 **이용 사례 추가**
 > 를 누르고 목록에서 **"Instagram에서 메시지 및 콘텐츠 관리"** 를 체크해 저장하면 됩니다.
 >
-> 추가한 뒤에는 반드시 **"Instagram 로그인으로 API 설정"** 을 쓰세요 —
-> "Facebook 로그인으로 API 설정" 은 이 프로그램이 쓰지 않는 방식입니다.
+> 추가한 뒤에는 반드시 **"Instagram 로그인이 포함된 API 설정"** 을 쓰세요 —
+> "Facebook 로그인이 포함된 API 설정" 은 이 프로그램이 쓰지 않는 방식입니다.
+
+그 화면에서 특히 틀리기 쉬운 두 가지:
+
+| 항목 | 주의 |
+|---|---|
+| `INSTAGRAM_CLIENT_SECRET` | 화면 맨 위의 **"Instagram 앱 시크릿 코드"** 입니다. `앱 설정 → 기본 설정` 의 앱 시크릿(Facebook 앱 쪽)을 넣으면 토큰 교환이 실패합니다 |
+| 게시 권한 | 1번 항목의 `Add all required permissions` 는 **메시지·댓글 권한만** 넣어 줍니다. 릴스 게시에 필요한 `instagram_business_content_publish` 는 **권한 및 기능** 페이지에서 직접 추가하세요 |
+
+Webhooks 구성 · Instagram 비즈니스 로그인 설정 · 앱 검수는 이 프로그램에 필요 없어 건너뛰어도 됩니다.
 
 **페이스북 페이지는 만들지 않아도 됩니다.** 인터넷 자료 다수가 페이지를 요구하는데, 그건
 다른 연동 방식(Facebook 로그인) 설명입니다 —
