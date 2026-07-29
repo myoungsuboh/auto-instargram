@@ -151,11 +151,24 @@ watch(
                   </p>
                   <p class="guide-warn">
                     <strong>대시보드에 제품 카드가 없고 "앱 맞춤 설정 및 요건" 목록만 보인다면</strong>,
-                    그 앱은 이미 다른 용도(광고·Threads 등)로 설정된 앱입니다. 제품 카드는
-                    <em>1단계대로 새로 만든 앱</em>의 대시보드에 나옵니다. 이 경우 오른쪽 위
-                    <strong>이용 사례 추가</strong> 로 붙여 보거나, 앱을 새로 만드세요.
+                    그 앱은 이미 다른 용도(광고·Threads 등)로 설정된 앱입니다.
+                    제품 카드는 <em>갓 만든 앱</em>의 대시보드에만 나옵니다. 이 경우
+                    오른쪽 위 <strong>이용 사례 추가</strong> 를 누르고, 목록에서
+                    <strong>"Instagram에서 메시지 및 콘텐츠 관리"</strong> 를 체크한 뒤
+                    <strong>저장</strong>하면 됩니다 (목록 아래쪽에 있어 스크롤해야 보입니다).
+                    이것이 Meta 문서가 말하는 그 이용 사례입니다.
+                  </p>
+                  <p class="guide-warn">
                     <strong>이미 있는 이용 사례(광고 등)를 눌러 들어가면 안 됩니다</strong> —
                     그 안의 권한 목록에는 인스타그램 권한이 없습니다.
+                  </p>
+                  <p class="guide-warn">
+                    왼쪽 메뉴에 Instagram 이 생기면 설정 방식이 두 개 보입니다.
+                    반드시 <strong>"Instagram 로그인으로 API 설정"</strong>
+                    (<em>API setup with Instagram business login</em>) 을 쓰세요.
+                    <strong>"Facebook 로그인으로 API 설정" 은 쓰지 마세요</strong> —
+                    이 프로그램은 <code>graph.instagram.com</code> 방식이라 토큰 종류가 달라
+                    작동하지 않습니다.
                   </p>
                   <p>
                     그러면 "Instagram 로그인을 통한 API 설정"이 자동으로 추가되고,
