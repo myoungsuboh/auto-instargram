@@ -544,26 +544,41 @@ body {
    디자인 스킬의 무채색·여백 원칙을 유지하되, 읽어야 하는 안내문이므로
    본문 폭을 좁혀 가독성을 확보한다. */
 
+/* 스크롤은 <b>모달 본문</b>이 담당한다.
+   배경(backdrop)을 스크롤 컨테이너로 두고 헤더만 position:sticky 로 붙이면,
+   본문이 헤더 위로 스크롤되어 <b>내용이 헤더를 뚫고 올라온다</b>(실제로 발생했던 문제).
+   헤더·푸터를 고정 flex 항목으로 두고 본문만 overflow 를 갖게 하면
+   본문이 자기 영역 밖으로 나갈 수 없어 구조적으로 그런 일이 생기지 않는다. */
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: var(--space-6) var(--space-4);
-  overflow-y: auto;
+  padding: var(--space-5) var(--space-4);
+  /* 배경은 스크롤하지 않는다 — 스크롤 주체는 .modal-body 다 */
+  overflow: hidden;
   /* 뒤 배경을 어둡게 — 웜 톤을 유지하기 위해 검정 대신 웜 브라운 계열 */
   background: rgba(51, 41, 31, 0.45);
 }
 
 .modal {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 720px;
+  /* 화면을 넘지 않게 제한해야 본문에 스크롤이 생긴다.
+     dvh 는 모바일 주소창이 접힐 때의 실제 높이를 반영한다(미지원 브라우저는 위 vh 사용). */
+  max-height: calc(100vh - 2 * var(--space-5));
+  max-height: calc(100dvh - 2 * var(--space-5));
   background: var(--canvas);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   outline: none;
+  /* 자식이 둥근 모서리 밖으로 삐져나오지 않게 */
+  overflow: hidden;
   /* 모달은 예외적으로 그림자를 쓴다 — 배경 위에 떠 있음을 알려야 한다 */
   box-shadow: 0 12px 40px rgba(51, 41, 31, 0.18);
 }
@@ -575,10 +590,9 @@ body {
   gap: var(--space-4);
   padding: var(--space-6);
   border-bottom: 1px solid var(--line);
-  position: sticky;
-  top: 0;
   background: var(--canvas);
-  border-radius: var(--radius) var(--radius) 0 0;
+  /* 스크롤해도 줄어들지 않는 고정 영역 */
+  flex-shrink: 0;
 }
 
 .modal-close {
@@ -603,7 +617,13 @@ body {
   outline-offset: 2px;
 }
 
+/* 유일한 스크롤 영역. min-height:0 이 없으면 flex 항목이 내용 크기만큼
+   늘어나 overflow 가 동작하지 않는다(flex 기본 min-height 는 auto). */
 .modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* 끝까지 스크롤해도 뒤 페이지가 따라 움직이지 않게 */
   padding: var(--space-6);
 }
 
@@ -612,6 +632,8 @@ body {
   border-top: 1px solid var(--line);
   display: flex;
   justify-content: flex-end;
+  background: var(--canvas);
+  flex-shrink: 0;
 }
 
 /* 모달 등장: 짧은 페이드. 크게 움직이면 읽기 시작이 늦어진다. */
