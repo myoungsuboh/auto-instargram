@@ -32,6 +32,20 @@ const uploadKey = ref(newIdempotencyKey())
 
 const captionLength = computed(() => upload.value.caption.length)
 
+/**
+ * 업로드 버튼이 눌리지 않는 이유.
+ *
+ * 버튼을 조용히 막아 두기만 하면 사용자는 눌러 보고 "반응이 없다 = 고장났다" 로
+ * 판단한다. 실제로 토큰 갱신 쪽에서 그런 신고를 받았다. 무엇을 채우면 되는지 알려준다.
+ */
+const uploadBlockedReason = computed(() => {
+  if (uploading.value) return ''
+  const missing = []
+  if (!upload.value.binaryPath) missing.push('영상 파일')
+  if (!upload.value.caption) missing.push('캡션')
+  return missing.length ? `${missing.join(' · ')} 을(를) 입력하면 버튼이 활성화됩니다.` : ''
+})
+
 async function submitUpload() {
   uploadError.value = null
   uploadResult.value = null
@@ -172,6 +186,11 @@ async function submitRefresh() {
           >
             {{ uploading ? '검증 중…' : '업로드 시작' }}
           </button>
+          <!-- 버튼이 왜 눌리지 않는지 알려준다. 조용히 막아 두면 사용자는
+               기능이 고장난 것으로 판단한다 (실제로 그렇게 신고받았다). -->
+          <p v-if="uploadBlockedReason" class="field-hint" style="margin-top: 12px">
+            {{ uploadBlockedReason }}
+          </p>
         </form>
 
         <p class="field-hint" style="margin-top: 24px">
@@ -265,6 +284,12 @@ async function submitRefresh() {
             >
               {{ refreshing ? '교환 중…' : '토큰 갱신' }}
             </button>
+            <!-- 칸이 비었을 때 버튼이 그냥 눌리지 않기만 하면, 사용자는 눌러 보고
+                 "아무 일도 안 일어난다 = 고장" 으로 판단한다. 실제로 그렇게 신고받았다. -->
+            <p v-if="!shortLivedToken && !refreshing" class="field-hint" style="margin-top: 12px">
+              위 칸에 단기 토큰을 붙여넣으면 버튼이 활성화됩니다.
+              토큰 받는 방법은 <strong>어떻게 받나요?</strong> 를 누르세요.
+            </p>
           </form>
         </template>
       </section>
