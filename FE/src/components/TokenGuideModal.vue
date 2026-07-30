@@ -253,9 +253,21 @@ watch(
                       <strong>사용자명</strong>을 넣고 초대를 보냅니다.
                     </li>
                     <li>
-                      <strong>초대를 수락합니다.</strong> 그 인스타그램 계정으로 로그인한 상태에서
-                      <code>https://www.instagram.com/accounts/manage_access/</code> 로 가서
-                      <strong>테스터 초대 → 수락</strong> 을 누릅니다.
+                      보내고 나면 역할 목록에 그 계정이 <strong>상태 "대기 중"</strong> 으로 나옵니다.
+                      아직 <em>수락 전</em>이라는 뜻입니다.
+                    </li>
+                    <li>
+                      <strong>그 인스타그램 계정으로 로그인한 상태에서 초대를 수락합니다.</strong>
+                      Meta 가 화면에 안내하는 위치는 <strong>프로필 → 앱 및 웹사이트</strong> 입니다.
+                      <span class="guide-note">
+                        웹에서 바로 가기: <code>https://www.instagram.com/accounts/manage_access/</code>
+                        → 테스터 초대 → 수락<br>
+                        앱에서: 프로필 → 설정 → 앱 및 웹사이트 → 테스터 초대 → 수락
+                      </span>
+                    </li>
+                    <li>
+                      수락하면 역할 목록의 상태가 <strong>"대기 중" 에서 바뀝니다.</strong>
+                      그것을 확인한 뒤에 다음 단계로 넘어가세요.
                     </li>
                   </ul>
                   <p class="guide-warn">
