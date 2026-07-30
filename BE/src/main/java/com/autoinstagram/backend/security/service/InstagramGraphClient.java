@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
@@ -53,7 +54,10 @@ public class InstagramGraphClient {
      *
      * @param shortLivedToken 사용자가 넘긴 단기 토큰
      * @return 장기 토큰과 만료까지 남은 초
-     * @throws ApiException 설정 누락(422) 또는 외부 호출 실패(502)
+     * @throws ApiException 설정 누락(422 UNPROCESSABLE) / 토큰이 잘못됨(422 INVALID_TOKEN) /
+     *                      상대 서비스 장애·타임아웃(502 UPSTREAM_UNAVAILABLE).
+     *                      Meta 의 4xx 를 502 로 올리지 않는 것이 중요하다 — 그러면 화면이
+     *                      "잠시 후 다시 시도" 를 안내해 사용자가 같은 잘못된 값으로 반복하게 된다.
      */
     public ExchangedToken exchangeForLongLivedToken(String shortLivedToken) {
         if (!properties.isConfigured()) {
@@ -89,14 +93,55 @@ public class InstagramGraphClient {
         } catch (ApiException ex) {
             throw ex;
 
+        } catch (HttpClientErrorException ex) {
+            // Meta 가 4xx 를 준 것은 <b>우리가 보낸 값이 잘못됐다</b>는 뜻이다 — 상대 서비스 장애가 아니다.
+            // 이것을 502 UPSTREAM_UNAVAILABLE 로 알리면 화면이 "잠시 후 다시 시도해 주세요" 를 띄우고,
+            // 사용자는 같은 잘못된 값으로 영원히 재시도하게 된다(실제로 그렇게 신고받았다).
+            // 명세(1_spack.md API-05)가 규정한 422 INVALID_TOKEN 으로 알린다.
+            String safe = TokenMasker.scrub(ex.getMessage());
+            log.warn("인스타그램 토큰 교환 거부 — 보낸 값이 잘못됨: {}", safe);
+            throw new ApiException(ErrorCode.INVALID_TOKEN, explainRejection(safe), ex);
+
         } catch (RestClientException ex) {
-            // 외부 의존 실패는 우리 버그와 구분해 502 로 알린다 (규칙 2).
+            // 여기까지 온 것은 연결 실패·타임아웃·5xx 등 <b>상대 쪽 문제</b>다 — 재시도가 의미 있다.
             // 예외 메시지에 요청 URL 이 담기고 그 안에 토큰·시크릿이 들어 있을 수 있으므로 반드시 scrub 한다.
             String safe = TokenMasker.scrub(ex.getMessage());
             log.error("인스타그램 Graph API 호출 실패: {}", safe);
             throw new ApiException(ErrorCode.UPSTREAM_UNAVAILABLE,
                     "Graph API 호출 실패: " + safe, ex);
         }
+    }
+
+    /**
+     * Meta 의 거부 응답을 <b>사용자가 무엇을 고쳐야 하는지</b> 알 수 있는 문장으로 바꾼다.
+     *
+     * <p>원문(예: {@code "Invalid OAuth access token - Cannot parse access token"})만 그대로
+     * 보여 주면 비개발자는 무엇을 해야 할지 알 수 없다. 실제로 겪은 두 경우를 짚어 준다.
+     *
+     * <p>package-private 인 이유: 이 문장이 사용자가 실제로 읽는 내용이라 회귀를 막아야 하는데,
+     * 외부 호출 없이 검증할 수 있도록 테스트에서 직접 부른다. 새 테스트 의존성을 들이지 않기 위한
+     * 선택이다(이 프로젝트는 의존성 추가를 최소화해 왔다 — ADR-0008 참고).
+     *
+     * @param safeMessage 이미 {@link TokenMasker#scrub} 을 거친 메시지
+     */
+    static String explainRejection(String safeMessage) {
+        String text = safeMessage == null ? "" : safeMessage;
+
+        // 값 자체가 토큰 형태가 아닐 때 Meta 가 쓰는 표현.
+        // 앱 시크릿(32자)이나 앱 ID 를 토큰 칸에 붙여넣는 실수가 가장 흔하다.
+        if (text.contains("Cannot parse access token")) {
+            return "입력한 값이 액세스 토큰 형식이 아닙니다. "
+                    + "'Instagram 앱 시크릿' 이나 '앱 ID' 를 붙여넣지 않았는지 확인해 주세요 — "
+                    + "인스타그램 토큰은 보통 150자가 넘습니다. "
+                    + "토큰은 Meta 앱 대시보드의 'Instagram 로그인이 포함된 API 설정' → "
+                    + "'2. 액세스 토큰 생성' → [토큰 생성] 에서 받습니다.";
+        }
+        // 단기 토큰은 1시간만 유효하다.
+        if (text.contains("expired") || text.contains("Session has expired")) {
+            return "토큰이 이미 만료되었습니다. 단기 토큰은 발급 후 1시간만 유효하므로, "
+                    + "Meta 앱 대시보드에서 [토큰 생성] 을 다시 눌러 새로 받은 뒤 바로 갱신해 주세요.";
+        }
+        return "인스타그램이 이 토큰을 거부했습니다: " + text;
     }
 
     /**
