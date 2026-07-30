@@ -93,6 +93,22 @@ localhost" 류의 사례가 있다. 즉 지금의 `http://localhost:5173` 은 **
 지금처럼 혼자 쓰는 상황에서는 기능이 완성돼도 체감 차이가 거의 없고,
 여러 사람이 각자 계정을 붙이는 그림은 **앱 검수 통과 후**에 성립한다.
 
+⚠️ **Advanced Access 의 비용이 "앱 검수 제출" 하나가 아니다 (2026-07-30 실측).**
+권한에 Advanced Access 를 요청하려 하면 다음 창이 뜬다:
+
+> "To add a permission or feature to App Review, become a Tech Provider"
+> "**This decision cannot be reversed after you've been identified as a Tech Provider.**"
+
+요구 사항이 세 겹이다: **비즈니스 인증 + 액세스 인증 + 앱 검수.**
+게다가 Tech Provider 전환은 **되돌릴 수 없고**, 이후 심사와 데이터 접근 요건이 더 엄격해진다.
+
+따라서 이 계획을 끝까지 가려면 **되돌릴 수 없는 계정 상태 변경**을 감수해야 한다.
+"코드만 만들면 되는 일"이 아니므로, 착수 결정 시 이 점을 반드시 사용자에게 확인해야 한다.
+
+반대로 **내 계정에만 게시하는 지금 방식에는 이 과정이 전혀 필요 없다** —
+Standard Access 는 모든 권한에 자동 승인되고, 역할이 부여된 사용자에게는 그것으로 충분하다
+([액세스 레벨](https://developers.facebook.com/docs/graph-api/overview/access-levels)).
+
 ## 영향 범위
 
 ### 데이터베이스 (V5 마이그레이션)
