@@ -123,7 +123,13 @@ if (-not (Test-Path '.env')) {
 
 # ── 3. 데이터베이스 기동 ────────────────────────────────────────────────────
 Write-Step 3 '데이터베이스를 시작합니다...'
-docker compose -f docker-compose.dev.yml up -d 2>&1 | ForEach-Object { Write-Detail $_ }
+# docker compose 는 진행 상황을 "커서를 위로 올려 그 줄을 다시 그리는" 방식으로 출력한다.
+# 그 제어문자를 그대로 콘솔에 흘리면 <b>바로 위에 찍은 우리 메시지가 덮여 잘린다</b>
+# (실제로 "[3/5] 데이터베이스를 시작합니다..." 가 "스를 시작합니다..." 로 잘려 보였다).
+# --progress 플래그는 compose 버전마다 위치가 달라 의존하지 않고, 제어문자만 직접 지운다.
+$ansiEscape = "$([char]27)\[[0-9;?]*[a-zA-Z]"
+docker compose -f docker-compose.dev.yml up -d 2>&1 |
+    ForEach-Object { Write-Detail (($_ -replace $ansiEscape, '').TrimEnd()) }
 if ($LASTEXITCODE -ne 0) {
     Write-Problem '[!] 데이터베이스를 시작하지 못했습니다. 위 메시지를 확인해 주세요.'
     Read-Host '엔터를 누르면 닫힙니다'
