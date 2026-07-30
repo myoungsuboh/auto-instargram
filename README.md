@@ -158,7 +158,7 @@ Meta 공식 문서 기준의 발급 절차가 단계별로 나옵니다 (15~20�
 | 항목 | 주의 |
 |---|---|
 | `INSTAGRAM_CLIENT_SECRET` | 화면 맨 위의 **"Instagram 앱 시크릿 코드"** 입니다. `앱 설정 → 기본 설정` 의 앱 시크릿(Facebook 앱 쪽)을 넣으면 토큰 교환이 실패합니다 |
-| 게시 권한 | 1번 항목의 `Add all required permissions` 는 **메시지·댓글 권한만** 넣어 줍니다. 릴스 게시에 필요한 `instagram_business_content_publish` 는 **권한 및 기능** 페이지에서 직접 추가하세요 |
+| 게시 권한 | 1번 항목의 `Add all required permissions` 만 누르면 됩니다. **`권한 및 기능` 페이지에서 [+ 추가] 를 누르지 마세요** — 그건 앱 검수(Advanced Access) 신청 경로이고, "되돌릴 수 없다"는 경고가 붙은 Tech Provider 전환을 요구합니다. 내 계정에만 올릴 거라면 필요 없습니다 (Standard Access 는 자동 승인) |
 
 Webhooks 구성 · Instagram 비즈니스 로그인 설정 · 앱 검수는 이 프로그램에 필요 없어 건너뛰어도 됩니다.
 

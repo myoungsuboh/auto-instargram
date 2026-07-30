@@ -206,18 +206,32 @@ watch(
                 </li>
 
                 <li>
-                  <strong>필요한 권한 추가 — 두 곳에서 해야 합니다</strong>
+                  <strong>필요한 권한 추가</strong>
                   <p>
                     "Instagram 로그인이 포함된 API 설정" 화면의 <strong>1번 항목</strong>에서
-                    <strong>Add all required permissions</strong> 를 누릅니다.
-                    이것으로 <code>instagram_business_basic</code> 등 기본 권한이 붙습니다.
+                    <strong>Add all required permissions</strong> 를 누릅니다. 이것으로 끝입니다.
                   </p>
                   <p class="guide-warn">
-                    <strong>그다음이 중요합니다.</strong> 1번이 넣어 주는 것은
-                    <em>메시지·댓글</em> 권한이라
-                    <strong>릴스 게시에 필요한 <code>instagram_business_content_publish</code> 가
-                      빠져 있습니다.</strong> 왼쪽 <strong>권한 및 기능</strong> 페이지로 가서
-                    이 권한을 직접 추가하세요. 없으면 게시가 거부됩니다.
+                    <strong>⚠️ 권한 및 기능 페이지에서 [+ 추가] 를 누르지 마세요.</strong>
+                    <code>instagram_business_content_publish</code> 가 그 목록에 "—" 로 보여
+                    빠진 것처럼 느껴지지만, <strong>그 버튼은 앱 검수(Advanced Access) 신청 경로</strong>입니다.
+                    누르면 <em>"Tech Provider 가 되어야 한다"</em> 는 창이 뜨고, 그 안내에
+                    <strong>"이 결정은 되돌릴 수 없습니다"</strong> 라고 적혀 있습니다.
+                    비즈니스 인증·액세스 인증·앱 검수를 모두 요구하며, 심사 기준도 더 엄격해집니다.
+                  </p>
+                  <p>
+                    <strong>내 계정에만 올릴 거라면 그 과정이 전혀 필요 없습니다.</strong>
+                    Meta 공식 문서(액세스 레벨) 원문:
+                    "모든 비즈니스, 소비자 및 게이밍 앱은 <strong>모든 권한과 기능에 대해
+                      Standard Access 가 자동 승인</strong>됩니다",
+                    "<strong>앱에서 역할이 부여된 사용자만 앱을 사용할 경우 앱에 필요한 권한과
+                      기능은 Standard Access 만 필요합니다.</strong>"
+                    즉 게시 권한은 이미 승인돼 있고, 중요한 것은 다음 단계 —
+                    <strong>그 인스타그램 계정에 이 앱의 역할을 주는 것</strong>입니다.
+                  </p>
+                  <p class="guide-note">
+                    앱 검수·Advanced Access 가 필요해지는 시점은 <strong>내가 아닌 다른 사람의
+                      계정</strong>에 올려야 할 때입니다. 그때까지는 건드리지 마세요.
                   </p>
                 </li>
 

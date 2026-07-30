@@ -118,6 +118,22 @@ Facebook Login 경로의 이점(페이지 인사이트 등)은 명세가 요구�
     앱 역할 → 역할 → Instagram 테스터 추가 → 그 계정으로
     `https://www.instagram.com/accounts/manage_access/` 에서 수락. 수락하지 않으면
     "개발자 역할 권한이 부족합니다" 로 막힌다.
+  - ⚠️ **`instagram_business_content_publish` 를 "권한 및 기능" 에서 [+ 추가] 하면 안 된다.**
+    그 목록에 상태가 `—` 로 보여 권한이 빠진 것처럼 느껴지지만, 그 버튼은
+    **앱 검수(Advanced Access) 신청 경로**다. 누르면 "Tech Provider 가 되어야 한다"는 창이 뜨고
+    그 안내에 **"This decision cannot be reversed"** 라고 적혀 있다(2026-07-30 실측).
+    비즈니스 인증·액세스 인증·앱 검수를 모두 요구한다.
+
+    **내 계정에만 게시하는 데는 그 과정이 필요 없다.** 액세스 레벨 문서 원문:
+    "모든 비즈니스, 소비자 및 게이밍 앱은 **모든 권한과 기능에 대해 Standard Access 가
+    자동 승인**됩니다", "**앱에서 역할이 부여된 사용자만 앱을 사용할 경우 앱에 필요한 권한과
+    기능은 Standard Access 만 필요합니다**"
+    ([출처](https://developers.facebook.com/docs/graph-api/overview/access-levels)).
+    Content Publishing 문서의 표도 이 경로의 액세스 레벨을 **Advanced / Standard 둘 다**로
+    적고 있다. 따라서 필요한 것은 권한 추가가 아니라 **그 인스타그램 계정에 앱 역할을 주는 것**이다.
+
+    ⚠️ 이 항목은 내가 안내를 틀렸던 지점이다 — "권한 및 기능에서 직접 추가하라"고 적었고,
+    그대로 따르면 되돌릴 수 없는 계정 변경으로 이어질 수 있었다. 다시 그렇게 적지 말 것.
   - ⚠️ **위를 모두 갖춰도 같은 오류가 나는 Meta 쪽 미해결 문제가 있다.**
     비즈니스 관리자 권한·앱 역할·페이지 연결이 모두 정상인데도 인증 단계에서
     "Insufficient developer role" 이 나온다는 신고가 Meta 개발자 커뮤니티에 있고,
