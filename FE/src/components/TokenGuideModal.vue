@@ -236,45 +236,28 @@ watch(
                 </li>
 
                 <li>
-                  <strong>내 인스타그램 계정을 테스터로 등록하고 초대를 수락</strong>
+                  <strong>내 인스타그램 계정을 앱에 연결</strong>
                   <p>
-                    이 단계를 건너뛰면 다음 단계에서
-                    <strong>"개발자 역할 권한이 부족합니다"</strong> 오류가 납니다.
-                    API 설정 화면에도 "진행하기 전에 역할 탭에서 Instagram 테스터 역할이
-                    계정으로 할당되었는지 확인하세요" 라고 적혀 있습니다.
+                    <strong>Instagram 로그인이 포함된 API 설정</strong> 화면의
+                    <strong>2번 "액세스 토큰 생성"</strong> 에서 <strong>계정 추가</strong> 를 누릅니다.
+                    인스타그램 <strong>로그인 창이 뜨고</strong>, 거기서 연결할 계정으로 로그인해
+                    권한을 허용하면 그 계정이 앱에 등록됩니다
+                    (문서: "Instagram 계정에 로그인하라는 메시지가 표시됩니다").
                   </p>
-                  <ul class="guide-list">
-                    <li>
-                      왼쪽 메뉴 <strong>앱 역할 → 역할</strong> 로 갑니다.
-                    </li>
-                    <li>
-                      아래로 스크롤해 <strong>Instagram 테스터</strong> 섹션에서
-                      <strong>Instagram 테스터 추가</strong> → 내 인스타그램
-                      <strong>사용자명</strong>을 넣고 초대를 보냅니다.
-                    </li>
-                    <li>
-                      보내고 나면 역할 목록에 그 계정이 <strong>상태 "대기 중"</strong> 으로 나옵니다.
-                      아직 <em>수락 전</em>이라는 뜻입니다.
-                    </li>
-                    <li>
-                      <strong>그 인스타그램 계정으로 로그인한 상태에서 초대를 수락합니다.</strong>
-                      Meta 가 화면에 안내하는 위치는 <strong>프로필 → 앱 및 웹사이트</strong> 입니다.
-                      <span class="guide-note">
-                        웹에서 바로 가기: <code>https://www.instagram.com/accounts/manage_access/</code>
-                        → 테스터 초대 → 수락<br>
-                        앱에서: 프로필 → 설정 → 앱 및 웹사이트 → 테스터 초대 → 수락
-                      </span>
-                    </li>
-                    <li>
-                      수락하면 역할 목록의 상태가 <strong>"대기 중" 에서 바뀝니다.</strong>
-                      그것을 확인한 뒤에 다음 단계로 넘어가세요.
-                    </li>
-                  </ul>
                   <p class="guide-warn">
-                    <strong>초대를 보내는 것만으로는 안 됩니다 — 수락까지 해야 합니다.</strong>
-                    가장 많이 걸리는 지점입니다. 그리고 브라우저가 <strong>그 계정으로</strong>
-                    로그인돼 있어야 합니다. 다른 인스타그램 계정으로 로그인된 상태면 같은 오류가
-                    계속 납니다.
+                    <strong>브라우저가 그 계정으로 로그인돼 있어야 합니다.</strong>
+                    다른 인스타그램 계정으로 로그인된 상태면
+                    <strong>"개발자 역할 권한이 부족합니다"</strong> 오류가 납니다.
+                    먼저 인스타그램에서 로그아웃하거나 시크릿 창을 쓰는 것이 확실합니다.
+                  </p>
+                  <p class="guide-warn">
+                    <strong>⚠️ "앱 역할 → 역할" 의 Instagram 테스터 초대는 이 방식과 무관합니다.</strong>
+                    그 역할 설명에 <em>"Instagram Basic Display API 에 필요한..."</em> 이라고 적혀 있는데,
+                    <strong>Basic Display API 는 2024년 12월 4일 폐기</strong>됐고 우리가 쓰는
+                    <em>Instagram Login</em> 방식이 그것을 대체했습니다. 그래서 인스타그램의
+                    <strong>앱 및 웹사이트 화면에 "테스터 초대" 탭이 아예 없습니다</strong>
+                    (활성 · 만료됨 · 삭제됨 뿐). 초대를 보내도 수락할 곳이 없으니
+                    <strong>그 경로로 가지 마세요.</strong>
                   </p>
                   <p class="guide-warn">
                     <strong>위를 모두 해도 같은 오류가 계속 난다면 — 회원님 잘못이 아닐 수 있습니다.</strong>
