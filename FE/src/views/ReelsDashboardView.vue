@@ -74,8 +74,13 @@ async function submitRefresh() {
     // ⚠️ 응답에는 장기 토큰 전문이 들어 있지만 <b>화면에 표시하지 않는다.</b>
     //    서버가 이미 암호화해 저장했으므로 사용자가 그 값을 볼 이유가 없고,
     //    화면에 띄우면 어깨너머·스크린샷·화면 공유로 새는 경로가 생긴다(POL-05 의 취지).
-    //    만료까지 남은 기간만 알려준다.
-    refreshResult.value = { expiresInDays: Math.floor(result.expiresIn / 86400) }
+    //    만료까지 남은 기간과 <b>어느 계정에 연결됐는지</b>만 알려준다.
+    //    계정 이름을 보여주는 이유: 엉뚱한 계정에 연결된 것을 모르고 게시하는 것이
+    //    가장 위험한 실수다. 눈으로 확인할 수 있어야 한다 (ADR-0024).
+    refreshResult.value = {
+      expiresInDays: Math.floor(result.expiresIn / 86400),
+      igUsername: result.igUsername || null,
+    }
     shortLivedToken.value = ''
   } catch (caught) {
     refreshError.value = toDisplayError(caught)
@@ -208,8 +213,16 @@ async function submitRefresh() {
           <NoticeBanner
             v-if="refreshResult"
             kind="success"
-            :message="`토큰이 갱신되어 안전하게 저장되었습니다. 약 ${refreshResult.expiresInDays}일 후 만료됩니다.`"
+            :message="refreshResult.igUsername
+              ? `@${refreshResult.igUsername} 계정에 연결되었습니다. 약 ${refreshResult.expiresInDays}일 후 만료됩니다. 계정 번호도 자동으로 저장했습니다.`
+              : `토큰이 갱신되어 안전하게 저장되었습니다. 약 ${refreshResult.expiresInDays}일 후 만료됩니다.`"
             style="margin-top: 24px"
+          />
+          <NoticeBanner
+            v-if="refreshResult && !refreshResult.igUsername"
+            kind="info"
+            message="계정 정보를 받아오지 못했습니다. 게시에는 .env 의 INSTAGRAM_USER_ID 값이 사용됩니다."
+            style="margin-top: 16px"
           />
           <NoticeBanner
             v-if="refreshError"

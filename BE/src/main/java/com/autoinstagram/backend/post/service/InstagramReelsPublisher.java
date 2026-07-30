@@ -104,19 +104,29 @@ public class InstagramReelsPublisher {
                     "인스타그램 실제 게시가 비활성화되어 있습니다 "
                             + "(INSTAGRAM_PUBLISH_ENABLED=false). 검증·저장·이력 기록은 정상 동작합니다.");
         }
-        if (igUserId == null || igUserId.isBlank()) {
+        // 평문 토큰은 지역 변수로만 존재한다 (POL-05).
+        // 토큰과 계정 번호를 같은 행에서 함께 읽는다 — 따로 읽으면 갱신이 끼어들어 섞일 수 있다.
+        SecurityCredentialService.PublishCredential credential =
+                credentialService.findCurrentForPublishing()
+                        .orElseThrow(() -> new ApiException(ErrorCode.UNPROCESSABLE,
+                                "유효한 인스타그램 액세스 토큰이 없습니다. "
+                                        + "POST /api/v1/tokens/refresh 로 먼저 발급하세요."));
+        String token = credential.accessToken();
+
+        // 계정 번호는 토큰 교환 때 서버가 받아 둔 값을 쓴다 (ADR-0024).
+        // 그 값이 없는 경우(이 기능 이전에 발급된 토큰, 또는 /me 조회 실패)에만
+        // 예전 방식인 환경변수로 대체한다.
+        String targetUserId = (credential.igUserId() != null && !credential.igUserId().isBlank())
+                ? credential.igUserId()
+                : igUserId;
+        if (targetUserId == null || targetUserId.isBlank()) {
             throw new ApiException(ErrorCode.UNPROCESSABLE,
-                    "INSTAGRAM_USER_ID 가 설정되지 않아 게시할 수 없습니다.");
+                    "인스타그램 계정 번호를 알 수 없습니다. 토큰을 다시 갱신하면 서버가 자동으로 받아옵니다 "
+                            + "(POST /api/v1/tokens/refresh). 수동으로 지정하려면 INSTAGRAM_USER_ID 를 설정하세요.");
         }
 
-        // 평문 토큰은 지역 변수로만 존재한다 (POL-05)
-        String token = credentialService.findCurrentPlainToken()
-                .orElseThrow(() -> new ApiException(ErrorCode.UNPROCESSABLE,
-                        "유효한 인스타그램 액세스 토큰이 없습니다. "
-                                + "POST /api/v1/tokens/refresh 로 먼저 발급하세요."));
-
         try {
-            ContainerCreated container = createContainer(token, caption);
+            ContainerCreated container = createContainer(token, targetUserId, caption);
             log.info("[1/4] 컨테이너 생성 — id={}", container.id());
 
             uploadBinary(token, container, mediaPath);
@@ -125,7 +135,7 @@ public class InstagramReelsPublisher {
             awaitProcessing(token, container.id());
             log.info("[3/4] 인스타그램 인코딩 완료 — id={}", container.id());
 
-            String mediaId = publishContainer(token, container.id());
+            String mediaId = publishContainer(token, targetUserId, container.id());
             log.info("[4/4] 게시 완료 — mediaId={}", mediaId);
 
             return new PublishResult(container.id(), mediaId);
@@ -155,7 +165,7 @@ public class InstagramReelsPublisher {
      *
      * <p>토큰도 함께 본문으로 보낸다 — 쿼리스트링에 있으면 프록시·액세스 로그에 남는다(POL-05).
      */
-    private ContainerCreated createContainer(String token, String caption) {
+    private ContainerCreated createContainer(String token, String targetUserId, String caption) {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("media_type", "REELS");
         form.add("upload_type", "resumable");
@@ -163,8 +173,8 @@ public class InstagramReelsPublisher {
         form.add("access_token", token);
 
         ContainerCreated created = graphClient.post()
-                // 경로에는 사용자 입력이 없다. igUserId 는 우리 설정값이다.
-                .uri("/{igUserId}/media", igUserId)
+                // 경로에는 사용자 입력이 없다. targetUserId 는 토큰과 함께 저장된 값이거나 우리 설정값이다.
+                .uri("/{igUserId}/media", targetUserId)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(form)
                 .retrieve()
@@ -239,13 +249,13 @@ public class InstagramReelsPublisher {
     }
 
     /** 4단계 — 컨테이너를 발행한다. */
-    private String publishContainer(String token, String containerId) {
+    private String publishContainer(String token, String targetUserId, String containerId) {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("creation_id", containerId);
         form.add("access_token", token);
 
         PublishedMedia published = graphClient.post()
-                .uri("/{igUserId}/media_publish", igUserId)
+                .uri("/{igUserId}/media_publish", targetUserId)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(form)
                 .retrieve()

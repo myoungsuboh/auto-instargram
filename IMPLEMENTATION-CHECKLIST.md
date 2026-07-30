@@ -87,6 +87,7 @@
 | 멱등성 장치 | `BE/.../common/idempotency/**`, `V3` | [ADR-0016](docs/decisions/2026-07-29-idempotency-separate-table.md) — Task 3.1 요구사항 |
 | 게시 시도 감사 테이블 | `BE/.../post/domain/PublishAttempt.java`, `V4` | [ADR-0014](docs/decisions/2026-07-29-publish-attempts-audit-table.md) — POL-01 을 실제로 달성하기 위해 |
 | 예약 실행 워커 | `BE/.../post/service/PublishWorker.java` | [ADR-0013](docs/decisions/2026-07-29-background-publish-worker.md) — `scheduledAt` 을 실행하는 주체가 없으면 예약 발행이 죽은 기능 |
+| 자격 증명에 계정 정보 2컬럼 (`ig_user_id`·`ig_username`) + API-05 응답 `igUsername` | `BE/.../security/domain/SecurityCredential.java`, `V5` | [ADR-0024](docs/decisions/2026-07-30-fetch-ig-account-on-token-exchange.md) — 사람이 손으로 계정 번호를 옮겨 적던 단계에서 실제로 잘못된 값이 들어갔음. **ENT-03 속성 3개를 넘어서는 의도된 이탈** |
 
 ### 검증하지 못한 부분 (정직한 고지)
 

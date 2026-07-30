@@ -6,6 +6,9 @@ tags: [decision]
 # ADR-0023: 인스타그램 토큰은 `INSTAGRAM_ACCESS_TOKEN` 이 아니라 DB 에서 읽는다
 
 - 기록일: 2026-07-30
+- 갱신: 2026-07-30 — `INSTAGRAM_USER_ID` 도 같은 이유로 사실상 불필요해졌다.
+  토큰 교환 시 서버가 계정 번호를 함께 받아 저장한다([ADR-0024](2026-07-30-fetch-ig-account-on-token-exchange.md)).
+  이제 이 환경변수는 자동 조회 실패 시의 **대체 수단**으로만 남는다.
 - 상태: 승인됨
 - 단계(Origin): dev (execute-dev) — 사후 기록(작업 교차검증 중 발견)
 - 관련 spec: [3_architecture.md — SVC-02 Required env vars](../../3_architecture.md) · [1_spack.md — ENT-03 / API-05](../../1_spack.md) · [2_ddd.md — AGG-02 SecurityCredential](../../2_ddd.md)

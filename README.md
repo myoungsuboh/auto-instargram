@@ -99,11 +99,18 @@ docker compose -f docker-compose.dev.yml down -v
 
 ```
 INSTAGRAM_PUBLISH_ENABLED=true
-INSTAGRAM_USER_ID=<인스타그램 계정 번호 — 페이스북 페이지 ID 가 아닙니다>
 INSTAGRAM_CLIENT_SECRET=<Instagram 앱 시크릿 — Facebook 앱 시크릿이 아닙니다>
 ```
 
 그리고 화면의 **릴스 → 토큰 갱신**에서 단기 토큰을 넣어 장기 토큰으로 교환하세요.
+성공하면 **연결된 계정 이름**이 표시됩니다 — 의도한 계정인지 확인하세요.
+
+> **계정 번호(`INSTAGRAM_USER_ID`)는 손대지 않아도 됩니다.** 토큰을 갱신할 때 서버가
+> 자동으로 받아 저장합니다. 이 칸은 자동 조회가 실패했을 때만 쓰이는 대체 수단입니다.
+>
+> ⚠️ `.env` 를 바꾼 뒤에는 **`stop.bat` → `run.bat`** 으로 서버를 다시 켜야 합니다.
+> 설정은 서버가 켜질 때 한 번만 읽습니다. 재시작하지 않으면 토큰 갱신에서
+> "요청을 처리할 수 없습니다" 오류가 납니다.
 
 ### 토큰은 어떻게 받나요?
 

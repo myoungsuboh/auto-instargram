@@ -42,6 +42,7 @@ public class TokenController {
     public ResponseEntity<TokenRefreshResponse> refresh(@Valid @RequestBody TokenRefreshRequest request) {
         var result = credentialService.refreshAccessToken(request.shortLivedToken());
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new TokenRefreshResponse(result.accessToken(), result.expiresInSeconds()));
+                .body(new TokenRefreshResponse(result.accessToken(), result.expiresInSeconds(),
+                        result.igUsername()));
     }
 }

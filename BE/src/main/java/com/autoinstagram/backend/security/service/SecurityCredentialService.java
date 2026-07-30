@@ -62,6 +62,12 @@ public class SecurityCredentialService {
         Instant issuedAt = Instant.now();
         Instant expiresAt = issuedAt.plusSeconds(exchanged.expiresInSeconds());
 
+        // 계정 번호·이름을 여기서 함께 받아 둔다 (ADR-0024) —
+        // 사람이 브라우저로 /me 를 호출해 .env 에 옮겨 적던 단계를 없앤다.
+        // 실패해도 empty 를 돌려주므로 토큰 교환은 그대로 살아난다.
+        InstagramGraphClient.AccountInfo account =
+                graphClient.fetchAccountInfo(exchanged.accessToken()).orElse(null);
+
         // AGG-03 불변식 2(expiresAt > issuedAt)는 issue() 가 검증한다.
         // 외부 API 가 이상한 값을 주면 여기서 걸린다.
         SecurityCredential credential;
@@ -69,7 +75,9 @@ public class SecurityCredentialService {
             credential = SecurityCredential.issue(
                     tokenCipher.encrypt(exchanged.accessToken()),
                     issuedAt,
-                    expiresAt);
+                    expiresAt,
+                    account == null ? null : account.userId(),
+                    account == null ? null : account.username());
         } catch (IllegalArgumentException ex) {
             throw new ApiException(ErrorCode.INVALID_TOKEN,
                     "교환된 토큰이 도메인 규칙을 위반함: " + ex.getMessage(), ex);
@@ -83,9 +91,11 @@ public class SecurityCredentialService {
         // EVT-03 발행. payload 에 토큰은 없다 (POL-05)
         eventPublisher.publishEvent(new TokenRefreshed(saved.getId(), expiresAt, issuedAt));
 
-        log.info("자격 증명 갱신 완료 — credentialId={}, 만료 {}", saved.getId(), expiresAt);
+        log.info("자격 증명 갱신 완료 — credentialId={}, 만료 {}, 계정={}",
+                saved.getId(), expiresAt, saved.getIgUsername());
 
-        return new RefreshResult(exchanged.accessToken(), saved.remainingSeconds(), saved.getId());
+        return new RefreshResult(exchanged.accessToken(), saved.remainingSeconds(), saved.getId(),
+                saved.getIgUsername());
     }
 
     /** 현재 유효한 자격 증명 (없으면 empty). */
@@ -107,18 +117,60 @@ public class SecurityCredentialService {
     }
 
     /**
+     * 게시에 필요한 토큰과 계정 번호를 <b>한 번의 조회로</b> 함께 가져온다 (ADR-0024).
+     *
+     * <p>토큰과 계정 번호를 따로 조회하면 그 사이에 갱신이 끼어들어 서로 다른 자격 증명의
+     * 토큰과 계정 번호가 섞일 수 있다. 같은 행에서 함께 읽어 그 가능성을 없앤다.
+     *
+     * @return 유효한 자격 증명이 없으면 {@link Optional#empty()}
+     */
+    @Transactional(readOnly = true)
+    public Optional<PublishCredential> findCurrentForPublishing() {
+        return repository.findFirstByDeletedAtIsNullOrderByIssuedAtDesc()
+                .filter(credential -> !credential.isExpired())
+                .map(credential -> new PublishCredential(
+                        tokenCipher.decrypt(credential.getTokenEncrypted()),
+                        credential.getIgUserId()));
+    }
+
+    /** 현재 연결된 계정 이름 (화면 표시용). 없으면 empty. */
+    @Transactional(readOnly = true)
+    public Optional<String> findCurrentAccountName() {
+        return repository.findFirstByDeletedAtIsNullOrderByIssuedAtDesc()
+                .filter(credential -> !credential.isExpired())
+                .map(SecurityCredential::getIgUsername);
+    }
+
+    /**
+     * 게시에 쓰는 자격 증명 묶음.
+     *
+     * @param accessToken 평문 토큰 — 즉시 사용하고 버려야 한다 (POL-05)
+     * @param igUserId    계정 번호. {@code null} 이면 호출자가 환경변수로 대체해야 한다
+     */
+    public record PublishCredential(String accessToken, String igUserId) {
+        /** 토큰이 로그로 새지 않게 한다 (POL-05). */
+        @Override
+        public String toString() {
+            return "PublishCredential{igUserId=" + igUserId + ", accessToken=***}";
+        }
+    }
+
+    /**
      * 갱신 결과.
      *
      * @param accessToken      평문 장기 토큰 (API-05 응답의 {@code accessToken})
      * @param expiresInSeconds 만료까지 남은 초 (API-05 응답의 {@code expiresIn})
      * @param credentialId     저장된 자격 증명 식별자
+     * @param igUsername       연결된 계정 이름. 조회 실패 시 {@code null}
      */
-    public record RefreshResult(String accessToken, long expiresInSeconds, java.util.UUID credentialId) {
+    public record RefreshResult(String accessToken, long expiresInSeconds, java.util.UUID credentialId,
+                                String igUsername) {
         /** 토큰이 로그로 새지 않게 한다 (POL-05). */
         @Override
         public String toString() {
             return "RefreshResult{credentialId=" + credentialId
-                    + ", expiresInSeconds=" + expiresInSeconds + ", accessToken=***}";
+                    + ", expiresInSeconds=" + expiresInSeconds
+                    + ", igUsername=" + igUsername + ", accessToken=***}";
         }
     }
 }

@@ -29,3 +29,4 @@ description: 의사결정(ADR) 색인 — 왜 그렇게 했는지. AI 빠른 인
 | ADR-0021 | HTTPS 강제·HSTS 는 기본값 off, 환경변수로 켠다 | dev (execute-dev) | 2026-07-29 15:35 | 승인됨 | [2026-07-29-https-enforcement-defaults-off.md](2026-07-29-https-enforcement-defaults-off.md) |
 | ADR-0022 | 인스타그램 연동은 "Instagram Login" 경로를 쓴다 | dev (execute-dev) | 2026-07-29 16:27 | 승인됨 | [2026-07-29-instagram-login-api-path.md](2026-07-29-instagram-login-api-path.md) |
 | ADR-0023 | 인스타그램 토큰은 환경변수가 아니라 DB 에서 읽는다 | dev (execute-dev) | 2026-07-30 | 승인됨 | [2026-07-30-instagram-token-from-db-not-env.md](2026-07-30-instagram-token-from-db-not-env.md) |
+| ADR-0024 | 계정 번호는 토큰 교환 때 서버가 함께 받아 저장한다 | dev (execute-dev) | 2026-07-30 | 승인됨 | [2026-07-30-fetch-ig-account-on-token-exchange.md](2026-07-30-fetch-ig-account-on-token-exchange.md) |

@@ -235,23 +235,15 @@ watch(
                     규정합니다 — 잘못 넣으면 토큰 교환이 실패합니다.
                   </p>
                   <p>
-                    이 값을 프로젝트 폴더의 <code>.env</code> 파일에 넣습니다:
+                    이 값을 프로젝트 폴더의 <code>.env</code> 파일에 넣습니다. 실제 게시를
+                    켜는 값도 함께 바꿉니다:
                   </p>
-                  <pre class="guide-code">INSTAGRAM_CLIENT_SECRET=복사한_앱_시크릿</pre>
-                </li>
-
-                <li>
-                  <strong>내 인스타그램 계정 번호 확인</strong>
-                  <p>
-                    브라우저 주소창에 아래 주소를 넣고 <code>단기토큰</code> 부분만 3단계에서
-                    받은 토큰으로 바꿔 실행합니다.
-                  </p>
-                  <pre class="guide-code">https://graph.instagram.com/v25.0/me?fields=user_id,username&amp;access_token=단기토큰</pre>
-                  <p>
-                    화면에 나오는 <code>user_id</code> 숫자를 <code>.env</code> 에 넣습니다:
-                  </p>
-                  <pre class="guide-code">INSTAGRAM_USER_ID=나온_숫자
+                  <pre class="guide-code">INSTAGRAM_CLIENT_SECRET=복사한_앱_시크릿
 INSTAGRAM_PUBLISH_ENABLED=true</pre>
+                  <p class="guide-note">
+                    <code>INSTAGRAM_USER_ID</code> 는 <strong>손대지 않아도 됩니다.</strong>
+                    계정 번호는 마지막 단계에서 서버가 자동으로 받아 저장합니다.
+                  </p>
                 </li>
 
                 <li>
@@ -259,18 +251,28 @@ INSTAGRAM_PUBLISH_ENABLED=true</pre>
                   <p>
                     <code>stop.bat</code> → <code>run.bat</code> 순서로 실행해 바뀐 설정을 반영합니다.
                   </p>
+                  <p class="guide-warn">
+                    <code>.env</code> 는 서버가 <strong>켜질 때 한 번만</strong> 읽습니다.
+                    재시작하지 않으면 방금 넣은 시크릿을 서버가 모르고,
+                    다음 단계에서 "요청을 처리할 수 없습니다" 오류가 납니다.
+                  </p>
                 </li>
 
                 <li>
                   <strong>이 화면에서 장기 토큰으로 바꾸기</strong>
                   <p>
-                    아래 <strong>인스타그램 토큰</strong> 칸에 3단계의 단기 토큰을 붙여넣고
+                    아래 <strong>인스타그램 토큰</strong> 칸에 4단계의 단기 토큰을 붙여넣고
                     <em>토큰 갱신</em> 을 누릅니다. 서버가 이것을
-                    <strong>60일짜리 장기 토큰</strong>으로 바꿔 암호화해 보관합니다.
+                    <strong>60일짜리 장기 토큰</strong>으로 바꿔 암호화해 보관하고,
+                    <strong>계정 번호와 계정 이름도 함께 받아 저장합니다.</strong>
+                  </p>
+                  <p>
+                    성공하면 <strong>연결된 계정 이름</strong>이 화면에 표시됩니다.
+                    의도한 계정인지 꼭 확인하세요.
                   </p>
                   <p class="guide-warn">
-                    단기 토큰은 1시간 뒤 만료되므로, 3단계 직후에 이 단계까지 마치는 게 좋습니다.
-                    만료되면 3단계를 다시 하면 됩니다.
+                    단기 토큰은 1시간 뒤 만료되므로, 4단계 직후에 이 단계까지 마치는 게 좋습니다.
+                    만료되면 4단계를 다시 하면 됩니다.
                   </p>
                 </li>
               </ol>
@@ -292,8 +294,14 @@ INSTAGRAM_PUBLISH_ENABLED=true</pre>
                   </span>
                 </li>
                 <li>
-                  <strong>60일마다 갱신해야 합니다.</strong> 장기 토큰은 60일 뒤 만료되고
-                  자동으로 연장되지 않습니다. 만료되면 게시가 실패하고 이력에 오류로 남습니다.
+                  <strong>60일 안에 한 번은 갱신해야 합니다.</strong> 장기 토큰은 60일 뒤 만료되고
+                  저절로 연장되지는 않습니다. 만료되면 게시가 실패하고 이력에 오류로 남습니다.
+                  <span class="guide-note">
+                    다만 만료 전이라면 <strong>처음부터 다시 할 필요는 없습니다</strong> —
+                    Meta 가 기존 장기 토큰을 60일 더 연장해 주는 기능을 제공합니다
+                    (조건: 발급 후 24시간 이상 지났고, 아직 만료되지 않았을 때).
+                    이 프로그램에 자동 연장은 아직 들어 있지 않아, 지금은 4단계부터 다시 하면 됩니다.
+                  </span>
                 </li>
                 <li>
                   <strong>하루 100건까지</strong> API 로 게시할 수 있습니다 (24시간 이동 기준).

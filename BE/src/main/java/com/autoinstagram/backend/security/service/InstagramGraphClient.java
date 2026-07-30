@@ -5,6 +5,7 @@ import com.autoinstagram.backend.common.error.ErrorCode;
 import com.autoinstagram.backend.common.util.TokenMasker;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Duration;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -96,6 +97,63 @@ public class InstagramGraphClient {
             throw new ApiException(ErrorCode.UPSTREAM_UNAVAILABLE,
                     "Graph API 호출 실패: " + safe, ex);
         }
+    }
+
+    /**
+     * 토큰의 주인인 인스타그램 계정 정보를 조회한다 (ADR-0024).
+     *
+     * <p>공식 문서의 호출 형태:
+     * {@code GET https://graph.instagram.com/v25.0/me?fields=user_id,username&access_token=...}
+     *
+     * <p><b>실패를 예외로 올리지 않고 empty 를 돌려주는 이유</b>: 이 조회는 부가 정보다.
+     * 호출자는 이미 성공한 토큰 교환의 결과를 손에 들고 있고, 교환은 비멱등이라
+     * 되돌리거나 다시 시도할 수 없다(ADR-0009). 조회가 실패했다고 트랜잭션을
+     * 롤백해 토큰을 버리면 사용자는 단기 토큰을 다시 발급받아야 한다 — 손실이 훨씬 크다.
+     * 값이 없으면 게시 시 {@code INSTAGRAM_USER_ID} 환경변수로 대체된다.
+     *
+     * @param accessToken 유효한 액세스 토큰
+     * @return 계정 정보. 조회에 실패하면 {@link Optional#empty()}
+     */
+    public Optional<AccountInfo> fetchAccountInfo(String accessToken) {
+        try {
+            GraphMeResponse response = restClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/" + properties.apiVersion() + "/me")
+                            .queryParam("fields", "user_id,username")
+                            .queryParam("access_token", accessToken)
+                            .build())
+                    .retrieve()
+                    .body(GraphMeResponse.class);
+
+            if (response == null || response.userId() == null || response.userId().isBlank()) {
+                log.warn("계정 정보 조회 응답에 user_id 가 없음 — 환경변수 INSTAGRAM_USER_ID 로 대체됩니다");
+                return Optional.empty();
+            }
+            log.info("계정 정보 조회 성공 — userId={}, username={}", response.userId(), response.username());
+            return Optional.of(new AccountInfo(response.userId(), response.username()));
+
+        } catch (RestClientException ex) {
+            // 메시지에 요청 URL 이 담기고 그 안에 토큰이 있으므로 반드시 scrub 한다 (POL-05)
+            log.warn("계정 정보 조회 실패 — 토큰 교환은 유지하고 환경변수로 대체합니다: {}",
+                    TokenMasker.scrub(ex.getMessage()));
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * 계정 정보. 둘 다 비밀이 아니다 — 토큰과 달리 로그에 남겨도 된다.
+     *
+     * @param userId   게시 대상 식별에 쓰는 계정 번호
+     * @param username 화면 표시용 계정 이름. 사용자가 바꿀 수 있으므로 식별에 쓰지 않는다
+     */
+    public record AccountInfo(String userId, String username) {
+    }
+
+    /** {@code /me} 응답 형태. */
+    private record GraphMeResponse(
+            @JsonProperty("user_id") String userId,
+            @JsonProperty("username") String username
+    ) {
     }
 
     /** 교환 결과. */

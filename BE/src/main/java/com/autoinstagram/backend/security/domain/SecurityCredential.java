@@ -44,24 +44,63 @@ public class SecurityCredential extends BaseEntity {
     @Column(name = "expires_at", nullable = false)
     private Instant expiresAt;
 
+    /**
+     * 토큰 교환 시 {@code GET /me} 로 함께 받아온 인스타그램 계정 번호 (ADR-0024).
+     *
+     * <p>⚠️ 1_spack.md ENT-03 이 규정한 속성 3개보다 많다 — 의도된 명세 이탈이다.
+     * 사람이 손으로 알아내 환경변수에 적던 값을 서버가 자동으로 갖게 하는 것이 목적이다.
+     *
+     * <p>NULL 일 수 있다: 이 기능 이전에 발급된 행이거나, {@code /me} 조회가 실패한 경우다.
+     * 조회 실패로 토큰 교환을 되돌릴 수는 없다(교환은 비멱등 — ADR-0009).
+     * 그 경우 게시 시 {@code INSTAGRAM_USER_ID} 환경변수로 대체한다.
+     */
+    @Column(name = "ig_user_id", length = 64)
+    private String igUserId;
+
+    /**
+     * 계정 이름. 화면에 "어느 계정에 연결됐는지" 보여주기 위한 값이다.
+     *
+     * <p>식별자로 쓰지 않는다 — 사용자가 언제든 바꿀 수 있다.
+     */
+    @Column(name = "ig_username", length = 64)
+    private String igUsername;
+
     protected SecurityCredential() {
         // JPA 전용
     }
 
-    private SecurityCredential(UUID id, String tokenEncrypted, Instant issuedAt, Instant expiresAt) {
+    private SecurityCredential(UUID id, String tokenEncrypted, Instant issuedAt, Instant expiresAt,
+                               String igUserId, String igUsername) {
         this.id = id;
         this.tokenEncrypted = tokenEncrypted;
         this.issuedAt = issuedAt;
         this.expiresAt = expiresAt;
+        this.igUserId = igUserId;
+        this.igUsername = igUsername;
     }
 
     /**
-     * 새 자격 증명을 발급한다.
+     * 계정 정보 없이 발급한다 — 계정 조회가 실패했거나 필요 없는 경우.
      *
      * @param tokenEncrypted 이미 암호화된 토큰. 평문을 넘기면 안 된다
      * @throws IllegalArgumentException AGG-03 불변식 위반 시
      */
     public static SecurityCredential issue(String tokenEncrypted, Instant issuedAt, Instant expiresAt) {
+        return issue(tokenEncrypted, issuedAt, expiresAt, null, null);
+    }
+
+    /**
+     * 계정 정보까지 함께 발급한다 (ADR-0024).
+     *
+     * <p>계정 정보를 나중에 UPDATE 하지 않고 처음 저장에 포함시키는 이유:
+     * 쓰기가 한 번으로 끝나고, "토큰은 저장됐는데 계정 정보만 빠진" 중간 상태가 생기지 않는다.
+     *
+     * @param igUserId   계정 번호. 알 수 없으면 {@code null}
+     * @param igUsername 계정 이름. 알 수 없으면 {@code null}
+     * @throws IllegalArgumentException AGG-03 불변식 위반 시
+     */
+    public static SecurityCredential issue(String tokenEncrypted, Instant issuedAt, Instant expiresAt,
+                                           String igUserId, String igUsername) {
         if (tokenEncrypted == null || tokenEncrypted.isBlank()) {
             throw new IllegalArgumentException("암호화된 토큰은 필수입니다");
         }
@@ -73,7 +112,13 @@ public class SecurityCredential extends BaseEntity {
             throw new IllegalArgumentException(
                     "만료 시각은 발급 시각보다 뒤여야 합니다 (AGG-03 불변식: expiresAt > issuedAt)");
         }
-        return new SecurityCredential(UUID.randomUUID(), tokenEncrypted, issuedAt, expiresAt);
+        return new SecurityCredential(UUID.randomUUID(), tokenEncrypted, issuedAt, expiresAt,
+                blankToNull(igUserId), blankToNull(igUsername));
+    }
+
+    /** 빈 문자열은 "값이 없음"과 같은 뜻이므로 NULL 로 통일한다 — 이후 판정 분기를 하나로 줄인다. */
+    private static String blankToNull(String value) {
+        return (value == null || value.isBlank()) ? null : value;
     }
 
     /** 이미 만료됐는지. */
@@ -104,6 +149,16 @@ public class SecurityCredential extends BaseEntity {
         return expiresAt;
     }
 
+    /** 계정 번호. 알 수 없으면 {@code null} — 호출자가 환경변수로 대체해야 한다. */
+    public String getIgUserId() {
+        return igUserId;
+    }
+
+    /** 계정 이름. 알 수 없으면 {@code null}. */
+    public String getIgUsername() {
+        return igUsername;
+    }
+
     /**
      * AGG-03 불변식 1 구현: 토큰(암호문조차) 을 포함하지 않는다.
      *
@@ -112,9 +167,13 @@ public class SecurityCredential extends BaseEntity {
      */
     @Override
     public String toString() {
+        // igUserId·igUsername 은 비밀이 아니라 계정 식별 정보이므로 남겨도 된다.
+        // 토큰만 절대 넣지 않는다.
         return "SecurityCredential{id=" + id
                 + ", issuedAt=" + issuedAt
                 + ", expiresAt=" + expiresAt
+                + ", igUserId=" + igUserId
+                + ", igUsername=" + igUsername
                 + ", token=<encrypted, not shown>}";
     }
 }
