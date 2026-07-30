@@ -108,6 +108,26 @@ watch(
                 </li>
               </ul>
               <p class="guide-warn">
+                <strong>헷갈리기 쉬운 값 세 개를 미리 구분해 두세요.</strong>
+                이름이 비슷하고 같은 화면에 함께 있어서 자주 바꿔 넣습니다.
+              </p>
+              <ul class="guide-list">
+                <li>
+                  <strong>Instagram 앱 시크릿</strong> — 32자 정도로 <em>짧습니다</em>.
+                  <strong><code>.env</code> 파일</strong>의 <code>INSTAGRAM_CLIENT_SECRET</code> 에 넣습니다.
+                  <span class="guide-note">화면의 "단기 토큰" 칸에 넣는 값이 아닙니다</span>
+                </li>
+                <li>
+                  <strong>단기 토큰</strong> — <em>150자가 넘게 깁니다</em>.
+                  <strong>이 화면의 "단기 토큰" 칸</strong>에 넣습니다.
+                  <span class="guide-note">[토큰 생성] 버튼을 눌러야 나옵니다</span>
+                </li>
+                <li>
+                  <strong>Instagram 앱 ID</strong> — <strong>이 프로그램은 쓰지 않습니다.</strong>
+                  넣을 곳이 없습니다.
+                </li>
+              </ul>
+              <p class="guide-warn">
                 <strong>페이스북 페이지는 필요 없습니다.</strong> 문서 원문:
                 "이 API 설정은 Facebook 페이지를 Instagram 프로페셔널 계정에 연결할 필요가
                 없습니다." 인터넷의 인스타그램 API 자료 다수가 페이스북 페이지를 요구하는데,
@@ -198,6 +218,58 @@ watch(
                     <strong>릴스 게시에 필요한 <code>instagram_business_content_publish</code> 가
                       빠져 있습니다.</strong> 왼쪽 <strong>권한 및 기능</strong> 페이지로 가서
                     이 권한을 직접 추가하세요. 없으면 게시가 거부됩니다.
+                  </p>
+                </li>
+
+                <li>
+                  <strong>내 인스타그램 계정을 테스터로 등록하고 초대를 수락</strong>
+                  <p>
+                    이 단계를 건너뛰면 다음 단계에서
+                    <strong>"개발자 역할 권한이 부족합니다"</strong> 오류가 납니다.
+                    API 설정 화면에도 "진행하기 전에 역할 탭에서 Instagram 테스터 역할이
+                    계정으로 할당되었는지 확인하세요" 라고 적혀 있습니다.
+                  </p>
+                  <ul class="guide-list">
+                    <li>
+                      왼쪽 메뉴 <strong>앱 역할 → 역할</strong> 로 갑니다.
+                    </li>
+                    <li>
+                      아래로 스크롤해 <strong>Instagram 테스터</strong> 섹션에서
+                      <strong>Instagram 테스터 추가</strong> → 내 인스타그램
+                      <strong>사용자명</strong>을 넣고 초대를 보냅니다.
+                    </li>
+                    <li>
+                      <strong>초대를 수락합니다.</strong> 그 인스타그램 계정으로 로그인한 상태에서
+                      <code>https://www.instagram.com/accounts/manage_access/</code> 로 가서
+                      <strong>테스터 초대 → 수락</strong> 을 누릅니다.
+                    </li>
+                  </ul>
+                  <p class="guide-warn">
+                    <strong>초대를 보내는 것만으로는 안 됩니다 — 수락까지 해야 합니다.</strong>
+                    가장 많이 걸리는 지점입니다. 그리고 브라우저가 <strong>그 계정으로</strong>
+                    로그인돼 있어야 합니다. 다른 인스타그램 계정으로 로그인된 상태면 같은 오류가
+                    계속 납니다.
+                  </p>
+                  <p class="guide-warn">
+                    <strong>위를 모두 해도 같은 오류가 계속 난다면 — 회원님 잘못이 아닐 수 있습니다.</strong>
+                    Meta 개발자 커뮤니티에 <em>비즈니스 관리자 권한·앱 역할·페이지 연결이 모두
+                      정상인데도</em> 이 오류가 난다는 신고가 있고, 2026년 7월 현재
+                    <strong>상태가 "해결되지 않음"</strong> 입니다. Meta 쪽 문제라 이 프로그램에서
+                    고칠 수 없습니다.
+                    <a
+                      href="https://developers.facebook.com/community/threads/1360157352263976/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >해당 신고 스레드</a>
+                    에서 진행 상황을 확인할 수 있습니다.
+                  </p>
+                  <p>
+                    그 경우 먼저 이것부터 확인하세요 — 연결하려는 인스타그램 계정이
+                    <strong>정말 프로페셔널(비즈니스 또는 크리에이터) 계정이고 공개 상태</strong>인지.
+                    개인 계정은 이 API 를 쓸 수 없습니다.
+                    <span class="guide-note">
+                      확인·전환: 인스타그램 앱 → 설정 → 계정 유형 및 도구 → 프로페셔널 계정으로 전환
+                    </span>
                   </p>
                 </li>
 
